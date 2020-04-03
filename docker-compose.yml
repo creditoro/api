@@ -34,8 +34,6 @@ services:
 
 networks:
   creditoro_internal:
-    external: false
-    name: creditoro
   web:
-    external: true
-    name: web
+    external:
+      name: web
