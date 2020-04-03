@@ -1,0 +1,22 @@
+name: Creditoro API unittests.
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  tests:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build with docker-compose and run unit tests.
+      run: |
+        docker network create web
+        docker-compose up -d --build
+        docker-compose exec -T creditoro_api flask db upgrade
+        docker-compose exec -T creditoro_api python -m unittest
