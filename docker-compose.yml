@@ -7,6 +7,13 @@ services:
       context: .
       dockerfile: docker/Dockerfile
     command: gunicorn --bind 0.0.0.0:5000 app:APP
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.creditoro.rule=Host(`api.creditoro.nymann.dev`)"
+      - "traefik.http.routers.creditoro.tls=true"
+      - "traefik.http.routers.creditoro.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.creditoro.entrypoints=https"
+      - "traefik.docker.network=web"
     depends_on:
       - creditoro_db
     ports:
@@ -26,6 +33,8 @@ services:
       - POSTGRES_PASSWORD=postgres
     env_file:
       - docker/db.env
+    labels:
+      - "traefik.enable=false"
     volumes:
       - ./postgres/data:/var/lib/postgresql/data/
     networks:

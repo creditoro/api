@@ -9,14 +9,22 @@ on:
 jobs:
 
   tests:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
-    - name: Build with docker-compose and run unit tests.
-      run: |
-        docker network create web
-        docker-compose up -d --build
-        docker-compose exec -T creditoro_api flask db upgrade
-        docker-compose exec -T creditoro_api python -m unittest
+      - uses: actions/checkout@v2
+      - name: Build with docker-compose and run unit tests.
+        run: |
+          docker network create web
+          docker-compose up -d --build
+          docker-compose exec -T creditoro_api flask db upgrade
+          docker-compose exec -T creditoro_api python -m unittest
+
+  tag-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Tag image
+        run: |
+          echo -n ${{ secrets.DOCKER_HUB_PASS }} | docker login -u creditoro --password-stdin
+          docker build -t production -f docker/Dockerfile .
+          docker push creditoro/api:production
