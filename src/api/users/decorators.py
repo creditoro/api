@@ -41,9 +41,9 @@ def create_user(func):
             return "", HTTPStatus.CONFLICT
 
         user = User(**body)
-        user.store()
-
-        return func(*args, **kwargs, user=user)
+        if user.store():
+            return func(*args, **kwargs, user=user)
+        return "", HTTPStatus.INTERNAL_SERVER_ERROR
 
     return wrapper
 
@@ -51,7 +51,7 @@ def create_user(func):
 def check_password(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        #auth = request.authorization TODO: needed?
+        # auth = request.authorization TODO: needed?
         body = request.json
         if not body:
             return "No email and password provided", HTTPStatus.BAD_REQUEST

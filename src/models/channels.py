@@ -14,3 +14,4 @@ class Channel(Base):
 
     created_at = DB.Column(DB.DateTime(timezone=True), server_default=func.now())
     updated_at = DB.Column(DB.DateTime(timezone=True), onupdate=func.now())
+

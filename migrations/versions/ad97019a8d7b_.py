@@ -28,13 +28,10 @@ def upgrade():
             CHECK ( value ~ '^[a-zA-Z0-9.!#$%&''*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$' );
         CREATE TABLE users (
             identifier UUID NOT NULL,
-            given_name VARCHAR(512),
-            surname varchar(512),
+            name VARCHAR(512),
             email email UNIQUE NOT NULL,
             phone varchar(254),
             created_at timestamp WITH TIME ZONE NOT NULL DEFAULT NOW(),
-            updated_at timestamp WITH TIME ZONE NOT NULL,
-            verified boolean,
             password VARCHAR(256),
             PRIMARY KEY (identifier)
         );

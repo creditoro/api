@@ -32,6 +32,7 @@ class Users(Resource):
     @create_user
     def post(self, user: User):
         # send_confirmation_email(user=user)
+
         return user.serialize(), HTTPStatus.CREATED
 
 
