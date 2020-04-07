@@ -6,9 +6,10 @@ Create Date: 2020-03-04 19:25:16.541557
 
 """
 from alembic import op
-
 # revision identifiers, used by Alembic.
 from sqlalchemy.orm import sessionmaker
+
+from migrations.helper import execute
 
 revision = 'ad97019a8d7b'
 down_revision = None
@@ -17,41 +18,12 @@ depends_on = None
 
 Session = sessionmaker()
 
+g_bind = op.get_bind()
+
 
 def upgrade():
-    bind = op.get_bind()
-    session = Session(bind=bind)
-
-    session.execute("""
-        CREATE EXTENSION citext;
-        CREATE DOMAIN email AS citext
-            CHECK ( value ~ '^[a-zA-Z0-9.!#$%&''*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$' );
-        CREATE TYPE role AS ENUM ('royalty_user', 'channel_admin', 'system_admin');
-        CREATE TABLE users (
-            identifier UUID NOT NULL,
-            name VARCHAR(512),
-            email email UNIQUE NOT NULL,
-            phone varchar(254),
-            created_at timestamp WITH TIME ZONE NOT NULL DEFAULT NOW(),
-            password VARCHAR(256),
-            role role NOT NULL,
-            PRIMARY KEY (identifier)
-        );
-        CREATE INDEX email_idx ON users USING btree (email);
-        CREATE INDEX name_idx ON users USING btree (name);
-        """)
-    session.commit()
+    execute(bind=g_bind, filename="added_user/upgrade.sql")
 
 
 def downgrade():
-    bind = op.get_bind()
-    session = Session(bind=bind)
-
-    session.execute("""
-        DROP INDEX email_idx;
-        DROP INDEX name_idx;
-        DROP TABLE users CASCADE;
-        DROP DOMAIN IF EXISTS email;
-        DROP EXTENSION IF EXISTS citext RESTRICT;
-    """)
-    session.commit()
+    execute(bind=g_bind, filename="added_user/downgrade.sql")

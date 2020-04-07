@@ -21,7 +21,7 @@ class User(Base):
     name = DB.Column(DB.String)
     email = DB.Column(DB.String, index=True)
     phone = DB.Column(DB.String)
-    role = DB.Column(DB.Enum(Role))
+    role = DB.Column(DB.Enum(Role), nullable=False)
     created_at = DB.Column(DB.DateTime(timezone=True), server_default=func.now())
     password = DB.Column(DB.String)
 

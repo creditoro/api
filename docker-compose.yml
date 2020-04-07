@@ -30,7 +30,7 @@ services:
     image: postgres:12-alpine
     container_name: creditoro_db
     environment:
-      - POSTGRES_PASSWORD=${secrets.POSTGRES_PASSWORD}
+      - POSTGRES_PASSWORD=postgres
     env_file:
       - docker/db.env
     labels:

@@ -6,5 +6,5 @@ from src.models import Base
 
 class Channel(Base):
     __tablename__ = "channels"
-    name = DB.Column(DB.String, unique=True)
     identifier = DB.Column(UUID(as_uuid=True), primary_key=True)
+    name = DB.Column(DB.String, unique=True)

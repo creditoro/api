@@ -12,21 +12,6 @@ from src.models.users import User
 def id_to_user(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        # *args
-        # **kwargs
-        # def hello(text, recipient, *args, **kwargs)
-        # values = ["hej karlo", "karlo"]
-        # hello(*values)
-
-        # hashMap
-        # key: value
-        # ans = {
-        # text: "hej karlo",
-        # recipient: "karlo"
-        # }
-        # hello(**ans)
-        # hello("hej karlo", "karlo")
-        # kwargs.get("text")
         user_id = kwargs.get("user_id")
         try:
             user = User.query.get(user_id)
