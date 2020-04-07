@@ -19,7 +19,7 @@ LOGIN_MODEL = USERS.model(name="auth_model", model=LOGIN_FIELDS)
 
 
 @USERS.route("/")
-class Users(Resource):
+class ListUsers(Resource):
     @USERS.marshal_list_with(MODEL)
     @USERS.param(name="q", description="query property, search for name, email and role.")
     def get(self):

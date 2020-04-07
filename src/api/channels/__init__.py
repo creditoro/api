@@ -7,14 +7,14 @@ from src.api.channels.decorators import id_to_channel, create_channel
 from src.api.channels.fields import SERIALIZE_FIELDS, SIGNUP_FIELDS
 from src.models.channels import Channel
 
-CHANNELS = Namespace(name="CHANNELS", description="Endpoints for CHANNELS.")
+CHANNELS = Namespace(name="channels", description="Endpoints for channels.")
 
 MODEL = CHANNELS.model(name="channel_model", model=SERIALIZE_FIELDS)
 SIGNUP_MODEL = CHANNELS.model(name="CHANNELS_signup_model", model=SIGNUP_FIELDS)
 
 
 @CHANNELS.route("/")
-class CHANNELS(Resource):
+class ListChannels(Resource):
     @CHANNELS.marshal_list_with(MODEL)
     @CHANNELS.param(name="q", description="query property, search for name, email and role.")
     def get(self):
