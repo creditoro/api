@@ -7,7 +7,8 @@ from flask_restplus import Namespace, Resource
 from sqlalchemy import or_
 
 from src.api.auth_resource import AuthResource
-from src.api.users.decorators import id_to_user, create_user, check_password, token_required
+from src.api.users.decorators import id_to_user, create_user, check_password
+from src.api.decorators import token_required
 from src.api.users.fields import SERIALIZE_FIELDS, SIGNUP_FIELDS, LOGIN_FIELDS
 from src.models.users import User
 

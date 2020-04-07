@@ -1,6 +1,6 @@
 from http import HTTPStatus
 
-from flask_restplus import Namespace, Resource
+from flask_restplus import Namespace
 
 from src.api.auth_resource import AuthResource
 from src.api.channels.decorators import id_to_channel, create_channel
@@ -14,7 +14,7 @@ SIGNUP_MODEL = CHANNELS.model(name="CHANNELS_signup_model", model=SIGNUP_FIELDS)
 
 
 @CHANNELS.route("/")
-class ListChannels(Resource):
+class ListChannels(AuthResource):
     @CHANNELS.marshal_list_with(MODEL)
     @CHANNELS.param(name="q", description="query property, search for name, email and role.")
     def get(self):

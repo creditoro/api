@@ -3,6 +3,8 @@ This module is used for adding namespaces to the api.
 """
 from flask import make_response
 from flask_restplus import Api
+
+from src.api.channels import CHANNELS
 from src.api.users import USERS
 
 AUTHORIZATIONS = {
@@ -34,3 +36,6 @@ def xml(data, code, headers=None):
 
 # api.creditoro.nymann.dev/users/
 API.add_namespace(USERS)
+
+# api.creditoro.nymann.dev/channels/
+API.add_namespace(CHANNELS)
