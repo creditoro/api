@@ -3,7 +3,6 @@ from flask_restplus import fields
 SERIALIZE_FIELDS = {
     "identifier": fields.String(required=False),
     "name": fields.String(required=True),
-    "surname": fields.String(required=True),
     "phone": fields.String(required=True),
     "email": fields.String(required=True),
 }

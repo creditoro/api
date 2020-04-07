@@ -22,10 +22,12 @@ def commit():
         DB.session.commit()
         return True
     except (SQLAlchemyError, IntegrityError) as error:
+        print(error)
         logger.debug("dbapierror: %s", error)
         DB.session.rollback()
         return False
     except Exception as exception:
+        print(exception)
         logger.error("Unhandled exception: %s", exception)
 
 
@@ -41,7 +43,7 @@ class Base(DB.Model):
         DB.session.add(self)
         return commit()
 
-    def remove(self):
+    def remove(self) -> bool:
         """
         Removes this object from the database and commits it (stores the changes).
         :return: (bool) True if the operation was successful, otherwise False.
