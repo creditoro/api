@@ -17,7 +17,6 @@ def create_channel(func):
         if channel:
             # A user with that email already exists.
             return "", HTTPStatus.CONFLICT
-
         channel = Channel(**body)
         if channel.store():
             return func(*args, **kwargs, channel=channel)

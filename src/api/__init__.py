@@ -8,10 +8,10 @@ from src.api.channels import CHANNELS
 from src.api.users import USERS
 
 AUTHORIZATIONS = {
-    "apikey": {
+    "Bearer Auth": {
         "type": "apiKey",
         "in": "header",
-        "name": "X-API-KEY"
+        "name": "Authorization"
     }
 }
 
@@ -23,6 +23,7 @@ API = Api(
     doc="/",
     default_mediatype="application/json",
     contact_url="https://github.com/creditoro",
+    security="Bearer Auth",
     authorizations=AUTHORIZATIONS
 )
 

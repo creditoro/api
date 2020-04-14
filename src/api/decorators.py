@@ -10,7 +10,7 @@ from src.models.users import User
 def token_required(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        token = request.headers.get("X-API-KEY")
+        token = request.headers.get("Authorization")
         if not token:
             return "Token is missing", HTTPStatus.UNAUTHORIZED
 
