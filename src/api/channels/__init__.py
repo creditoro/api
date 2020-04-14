@@ -5,14 +5,14 @@ from flask_restplus import Namespace, Resource
 
 from src.api.auth_resource import AuthResource
 from src.api.channels.decorators import id_to_channel, create_channel
-from src.api.channels.fields import SERIALIZE_FIELDS, SIGNUP_FIELDS
+from src.api.channels.fields import SERIALIZE_FIELDS, POST_FIELDS
 from src.api.decorators import token_required
 from src.models.channels import Channel
 
 CHANNELS = Namespace(name="channels", description="Endpoints for channels.")
 
 MODEL = CHANNELS.model(name="channel_model", model=SERIALIZE_FIELDS)
-SIGNUP_MODEL = CHANNELS.model(name="CHANNELS_signup_model", model=SIGNUP_FIELDS)
+EXPECT_MODEL = CHANNELS.model(name="CHANNELS_signup_model", model=POST_FIELDS)
 
 
 @CHANNELS.route("/")
@@ -31,7 +31,7 @@ class ListChannels(Resource):
         return Channel.serialize_list(results), HTTPStatus.OK
 
     @token_required
-    @CHANNELS.expect(SIGNUP_MODEL)
+    @CHANNELS.expect(EXPECT_MODEL)
     @CHANNELS.marshal_with(MODEL)
     @create_channel
     def post(self, channel: Channel):
@@ -47,15 +47,13 @@ class ChannelById(AuthResource):
         return channel.serialize(), HTTPStatus.OK
 
     @CHANNELS.marshal_with(MODEL)
-    @id_to_channel
-    def update(self, channel):
-        # TODO(HTTP Update provide all keys.)
-        return channel.serialize(), HTTPStatus.OK
-
-    @CHANNELS.marshal_with(MODEL)
+    @CHANNELS.expect(EXPECT_MODEL)
     @id_to_channel
     def patch(self, channel):
-        # TODO(provide a single key and update its value, let everything else remain as it is.)
+        body = CHANNELS.payload
+        name = body.get("name")
+        channel.name = name
+        channel.store()
         return channel.serialize(), HTTPStatus.OK
 
     @CHANNELS.marshal_with(MODEL)
