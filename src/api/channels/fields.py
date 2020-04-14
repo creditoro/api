@@ -5,7 +5,6 @@ SERIALIZE_FIELDS = {
     "name": fields.String(required=True),
 }
 
-SIGNUP_FIELDS = {
+POST_FIELDS = {
     "name": fields.String(required=True),
 }
-
