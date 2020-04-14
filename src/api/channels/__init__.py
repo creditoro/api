@@ -56,7 +56,6 @@ class ChannelById(AuthResource):
         channel.store()
         return channel.serialize(), HTTPStatus.OK
 
-    @CHANNELS.marshal_with(MODEL)
     @id_to_channel
     def delete(self, channel):
         if channel.remove():
