@@ -24,3 +24,6 @@ sentry_sdk[flask]
 
 # Web tokens
 PyJwt
+
+# Validate email
+validate_email
