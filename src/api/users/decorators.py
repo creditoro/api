@@ -3,6 +3,7 @@ from http import HTTPStatus
 
 from flask import request
 from sqlalchemy.exc import DataError
+from validate_email import validate_email
 from werkzeug.security import check_password_hash
 
 from src.models.users import User
@@ -29,7 +30,8 @@ def create_user(func):
     def wrapper(*args, **kwargs):
         body = request.json
         email = body.get("email")
-
+        if not validate_email(email):
+            return "", HTTPStatus.BAD_REQUEST
         password = body.get("password")
         repeat_password = body.get("repeated_password")
         if password != repeat_password:
