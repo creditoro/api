@@ -21,7 +21,7 @@ class ListChannels(Resource):
     @CHANNELS.marshal_list_with(MODEL)
     @CHANNELS.param(name="q", description="query property, search for name, email and role.")
     def get(self):
-        query_prop = request.args.get("q", None)
+        query_prop = request.args.get(key="q", default=None, type=str)
         if query_prop is None:
             results = Channel.query.all()
         else:
