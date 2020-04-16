@@ -51,6 +51,7 @@ def create_user(func):
 
 
 def update_user(func):
+    @id_to_user
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         user = kwargs.get("user")
