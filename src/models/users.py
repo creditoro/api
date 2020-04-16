@@ -3,6 +3,7 @@ from uuid import uuid4
 
 from sqlalchemy import func
 from sqlalchemy.dialects.postgresql import UUID
+from validate_email import validate_email
 from werkzeug.security import generate_password_hash
 
 from src.extensions import DB
@@ -32,3 +33,21 @@ class User(Base):
         self.password = generate_password_hash(password, method="sha256")
         self.identifier = uuid4()
         self.role = Role.royalty_user
+
+    def update(self, name: str = None, email: str = None, phone: str = None, password: str = None, *_, **__) -> bool:
+        if name is not None:
+            self.name = name
+
+        if email is not None:
+            if validate_email(email):
+                self.email = email
+            else:
+                # TODO replace with raise custom invalid email exception
+                return False
+
+        if phone is not None:
+            self.phone = phone
+
+        if password is not None:
+            self.password = generate_password_hash(password=password, method="sha256")
+        return self.store()

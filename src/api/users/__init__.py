@@ -7,21 +7,20 @@ from flask_restplus import Namespace, Resource
 from sqlalchemy import or_
 
 from src.api.auth_resource import AuthResource
-from src.api.users.decorators import id_to_user, create_user, check_password
-from src.api.decorators import token_required
+from src.api.users.decorators import id_to_user, create_user, check_password, update_user
 from src.api.users.fields import SERIALIZE_FIELDS, SIGNUP_FIELDS, LOGIN_FIELDS
 from src.models.users import User
 
 USERS = Namespace(name="users", description="Endpoints for users.")
 
-MODEL = USERS.model(name="user_model", model=SERIALIZE_FIELDS)
-SIGNUP_MODEL = USERS.model(name="users_signup_model", model=SIGNUP_FIELDS)
+SERIALIZE_MODEL = USERS.model(name="user_model", model=SERIALIZE_FIELDS)
+EXPECT_MODEL = USERS.model(name="users_signup_model", model=SIGNUP_FIELDS)
 LOGIN_MODEL = USERS.model(name="auth_model", model=LOGIN_FIELDS)
 
 
 @USERS.route("/")
 class ListUsers(Resource):
-    @USERS.marshal_list_with(MODEL)
+    @USERS.marshal_list_with(SERIALIZE_MODEL)
     @USERS.param(name="q", description="query property, search for name, email and role.")
     def get(self):
         query_prop = request.args.get("q", None)
@@ -38,8 +37,8 @@ class ListUsers(Resource):
             results = query.all()
         return User.serialize_list(results), HTTPStatus.OK
 
-    @USERS.expect(SIGNUP_MODEL)
-    @USERS.marshal_with(MODEL)
+    @USERS.expect(EXPECT_MODEL)
+    @USERS.marshal_with(SERIALIZE_MODEL)
     @create_user
     def post(self, user: User):
         # send_confirmation_email(user=user)
@@ -48,24 +47,26 @@ class ListUsers(Resource):
 
 @USERS.route("/<string:user_id>")
 class UserById(AuthResource):
-    @USERS.marshal_with(MODEL)
+    @USERS.marshal_with(SERIALIZE_MODEL)
     @id_to_user
     def get(self, user: User):
         return user.serialize(), HTTPStatus.OK
 
-    @USERS.marshal_with(MODEL)
+    @USERS.expect(EXPECT_MODEL)
+    @USERS.marshal_with(SERIALIZE_MODEL)
     @id_to_user
-    def update(self, user):
+    @update_user
+    def put(self, user):
         # TODO(HTTP Update provide all keys.)
         return user.serialize(), HTTPStatus.OK
 
-    @USERS.marshal_with(MODEL)
+    @USERS.marshal_with(SERIALIZE_MODEL)
     @id_to_user
     def patch(self, user):
         # TODO(provide a single key and update its value, let everything else remain as it is.)
         return user.serialize(), HTTPStatus.OK
 
-    @USERS.marshal_with(MODEL)
+    @USERS.marshal_with(SERIALIZE_MODEL)
     @id_to_user
     def delete(self, user):
         if user.remove():

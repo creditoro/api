@@ -4,7 +4,7 @@ from http import HTTPStatus
 from flask import request
 from sqlalchemy.exc import DataError
 from validate_email import validate_email
-from werkzeug.security import check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from src.models.users import User
 
@@ -16,11 +16,11 @@ def id_to_user(func):
         try:
             user = User.query.get(user_id)
             if not user:
-                return "User not found", HTTPStatus.NOT_FOUND # 404
+                return "User not found", HTTPStatus.NOT_FOUND  # 404
         except DataError:
             # api.creditoro.nymann.dev/users/k3l;21k3;lk3as
             return "Provided user_id is invalid syntax for uuid", HTTPStatus.BAD_REQUEST
-        return func(*args, user)
+        return func(*args, user=user)
 
     return wrapper
 
@@ -50,6 +50,22 @@ def create_user(func):
     return wrapper
 
 
+def update_user(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        user = kwargs.get("user")
+        if user is None:
+            # A user with that email already exists.
+            return "", HTTPStatus.NOT_FOUND
+
+        body = request.json
+        if user.update(**body):
+            return func(*args, **kwargs)
+        return "", HTTPStatus.BAD_REQUEST
+
+    return wrapper
+
+
 def check_password(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -70,5 +86,3 @@ def check_password(func):
         return func(args, user=user, **kwargs)
 
     return wrapper
-
-
