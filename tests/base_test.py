@@ -17,13 +17,13 @@ class BaseTestCase(unittest.TestCase):
         with self.app.app_context():
             test_user = User.query.filter_by(email=self.testing_email).one_or_none()
             if not test_user:
-                test_user = User(name="test", email=self.testing_email, phone="42424242", password="test")
-                test_user.store()
+                self.test_user = User(name="test", email=self.testing_email, phone="42424242", password="test")
+                self.test_user.store()
             response = self.client.post("/users/login", json={"email": self.testing_email, "password": "test"})
             self.token = response.json["token"]
 
     def tearDown(self) -> None:
         # remove created user
         with self.app.app_context():
-            test_user = User.query.filter_by(email="test@creditoro.nymann.dev").one_or_none()
-            test_user.remove()
+            self.test_user = User.query.filter_by(email="test@creditoro.nymann.dev").one_or_none()
+            self.test_user.remove()

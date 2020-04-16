@@ -8,13 +8,14 @@ from sqlalchemy import or_
 
 from src.api.auth_resource import AuthResource
 from src.api.users.decorators import id_to_user, create_user, check_password, update_user
-from src.api.users.fields import SERIALIZE_FIELDS, SIGNUP_FIELDS, LOGIN_FIELDS
+from src.api.users.fields import SERIALIZE_FIELDS, SIGNUP_FIELDS, LOGIN_FIELDS, PATCH_FIELDS
 from src.models.users import User
 
 USERS = Namespace(name="users", description="Endpoints for users.")
 
 SERIALIZE_MODEL = USERS.model(name="user_model", model=SERIALIZE_FIELDS)
-EXPECT_MODEL = USERS.model(name="users_signup_model", model=SIGNUP_FIELDS)
+EXPECT_MODEL = USERS.model(name="users_except_model", model=SIGNUP_FIELDS)
+PATCH_MODEL = USERS.model(name="users_patch_model", model=PATCH_FIELDS)
 LOGIN_MODEL = USERS.model(name="auth_model", model=LOGIN_FIELDS)
 
 
@@ -54,16 +55,14 @@ class UserById(AuthResource):
 
     @USERS.expect(EXPECT_MODEL)
     @USERS.marshal_with(SERIALIZE_MODEL)
-    @id_to_user
     @update_user
     def put(self, user):
-        # TODO(HTTP Update provide all keys.)
         return user.serialize(), HTTPStatus.OK
 
     @USERS.marshal_with(SERIALIZE_MODEL)
-    @id_to_user
+    @USERS.expect(PATCH_MODEL)
+    @update_user
     def patch(self, user):
-        # TODO(provide a single key and update its value, let everything else remain as it is.)
         return user.serialize(), HTTPStatus.OK
 
     @USERS.marshal_with(SERIALIZE_MODEL)
