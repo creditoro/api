@@ -2,7 +2,7 @@
 This module is intended for common/shared functionality between ORM classes in the models dir.
 """
 import logging
-from uuid import UUID
+from sqlalchemy.dialects.postgresql import UUID
 
 from sqlalchemy import inspect
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
