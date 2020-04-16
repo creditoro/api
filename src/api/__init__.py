@@ -5,6 +5,7 @@ from flask import make_response
 from flask_restplus import Api
 
 from src.api.channels import CHANNELS
+from src.api.people import PEOPLE
 from src.api.productions import PRODUCTIONS
 from src.api.users import USERS
 
@@ -44,3 +45,6 @@ API.add_namespace(CHANNELS)
 
 # api.creditoro.nymann.dev/productions/
 API.add_namespace(PRODUCTIONS)
+
+# api.creditoro.nymann.dev/people/
+API.add_namespace(PEOPLE)
