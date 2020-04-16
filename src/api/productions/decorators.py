@@ -5,7 +5,6 @@ from flask import request
 from sqlalchemy.exc import DataError
 
 from src.models.productions import Production
-from src.extensions import DB
 
 
 def create_production(func):
@@ -21,15 +20,6 @@ def create_production(func):
         # Check if partition exists.
         if len(title) == 0:
             return "", HTTPStatus.BAD_REQUEST
-        first_letter = title[0]
-        table_name = f"productions_{first_letter}"
-        if not DB.engine.dialect.has_table(DB.engine, table_name):
-            DB.engine.execute(f"""
-                CREATE TABLE IF NOT EXISTS {table_name}
-                PARTITION OF productions
-                FOR VALUES in ('{first_letter}');
-            """)
-
         production = Production(**body)
         if production.store():
             return func(*args, **kwargs, production=production)
