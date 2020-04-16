@@ -5,6 +5,7 @@ from flask import request
 from sqlalchemy.exc import DataError
 
 from src.models.productions import Production
+from src.extensions import DB
 
 
 def create_production(func):
@@ -12,11 +13,23 @@ def create_production(func):
     def wrapper(*args, **kwargs):
         body = request.json
         title = body.get("title")
-
         production = Production.query.filter_by(title=title).one_or_none()
         if production:
             # A user with that email already exists.
             return "", HTTPStatus.CONFLICT
+
+        # Check if partition exists.
+        if len(title) == 0:
+            return "", HTTPStatus.BAD_REQUEST
+        first_letter = title[0]
+        table_name = f"productions_{first_letter}"
+        if not DB.engine.dialect.has_table(DB.engine, table_name):
+            DB.engine.execute(f"""
+                CREATE TABLE IF NOT EXISTS {table_name}
+                PARTITION OF productions
+                FOR VALUES in ('{first_letter}');
+            """)
+
         production = Production(**body)
         if production.store():
             return func(*args, **kwargs, production=production)
@@ -30,11 +43,28 @@ def id_to_production(func):
     def wrapper(*args, **kwargs):
         production_id = kwargs.get("production_id")
         try:
-            user = Production.query.get(production_id)
-            if not user:
+            production = Production.query.get(production_id)
+            if not production:
                 return "Production not found", HTTPStatus.NOT_FOUND  # 404
         except DataError:
             return "Provided production_id is invalid syntax for uuid", HTTPStatus.BAD_REQUEST
-        return func(*args, user)
+        return func(*args, production=production)
+
+    return wrapper
+
+
+def update_production(func):
+    @id_to_production
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        production = kwargs.get("production")
+        if production is None:
+            # A user with that email already exists.
+            return "", HTTPStatus.NOT_FOUND
+
+        body = request.json
+        if production.update(**body):
+            return func(*args, **kwargs)
+        return "", HTTPStatus.BAD_REQUEST
 
     return wrapper

@@ -14,3 +14,9 @@ class Channel(Base):
     def __init__(self, name: str, *_, **__):
         self.name = name
         self.identifier = uuid.uuid4()
+
+    def serialize(self):
+        return {
+            "identifier": str(self.identifier),
+            "name": self.name
+        }

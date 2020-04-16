@@ -51,3 +51,11 @@ class User(Base):
         if password is not None:
             self.password = generate_password_hash(password=password, method="sha256")
         return self.store()
+
+    def serialize(self):
+        return {
+            "identifier": str(self.identifier),
+            "name": self.name,
+            "email": self.email,
+            "phone": self.phone
+        }

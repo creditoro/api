@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from sqlalchemy import func
 from sqlalchemy.dialects.postgresql import UUID
 
@@ -17,3 +19,29 @@ class Production(Base):
     channel = DB.relationship("Channel")
 
     created_at = DB.Column(DB.DateTime(timezone=True), server_default=func.now())
+
+    def __init__(self, title: str, producer_id, channel_id):
+        self.identifier = uuid4()
+        self.title = title
+        self.producer_id = producer_id
+        self.channel_id = channel_id
+
+    def update(self, title: str = None, producer_id=None, channel_id=None, *_, **__) -> bool:
+        if title is not None:
+            self.title = title
+
+        if producer_id is not None:
+            self.producer_id = producer_id
+
+        if channel_id is not None:
+            self.channel_id = channel_id
+
+        return self.store()
+
+    def serialize(self):
+        return {
+            "identifier": str(self.identifier),
+            "title": self.title,
+            "producer": self.producer.serialize(),
+            "channel": self.channel.serialize()
+        }

@@ -12,3 +12,9 @@ POST_FIELDS = {
     "producer_id": fields.String(required=True),
     "channel_id": fields.String(required=True)
 }
+
+PATCH_FIELDS = {
+    "title": fields.String(required=False),
+    "producer_id": fields.String(required=False),
+    "channel_id": fields.String(required=False)
+}
