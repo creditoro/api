@@ -12,7 +12,7 @@ from src.extensions import DB
 logger = logging.getLogger(__name__)
 
 
-def commit():
+def commit() -> bool:
     """
     Commits changes to the database, and catches DBAPIErrors.
     error)
@@ -35,7 +35,7 @@ class Base(DB.Model):
     """Meant to be used as a base class for all our "database-table" classes instead of db.Model."""
     __abstract__ = True
 
-    def store(self):
+    def store(self) -> bool:
         """
         Adds this object to the database session and tries to commit it.
         :return (bool) True if operation was successful otherwise False.
