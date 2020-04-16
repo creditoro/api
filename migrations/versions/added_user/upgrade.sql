@@ -5,12 +5,13 @@ CREATE DOMAIN email AS citext
 CREATE TYPE role AS ENUM ('royalty_user', 'channel_admin', 'system_admin');
 CREATE TABLE users
 (
-    identifier UUID                     NOT NULL,
+    identifier UUID         NOT NULL,
     name       VARCHAR(512),
-    email      email UNIQUE             NOT NULL,
+    email      email UNIQUE NOT NULL,
     phone      varchar(254),
     password   VARCHAR(256),
-    role       role                     NOT NULL,
+    role       role         NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (identifier)
 );
 CREATE INDEX users_email_idx ON users USING btree (email);
