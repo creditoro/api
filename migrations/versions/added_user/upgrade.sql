@@ -9,7 +9,6 @@ CREATE TABLE users
     name       VARCHAR(512),
     email      email UNIQUE             NOT NULL,
     phone      varchar(254),
-    created_at timestamp WITH TIME ZONE NOT NULL DEFAULT NOW(),
     password   VARCHAR(256),
     role       role                     NOT NULL,
     PRIMARY KEY (identifier)
