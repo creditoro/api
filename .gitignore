@@ -13,3 +13,6 @@ venv/
 postgres/
 
 .coverage
+coverage.xml
+pylint_report.txt
+htmlcov/
