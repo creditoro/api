@@ -1,7 +1,9 @@
+from uuid import uuid4
+
 from sqlalchemy.dialects.postgresql import UUID
 
-from src.models import Base
 from src.extensions import DB
+from src.models import Base
 
 
 class Credit(Base):
@@ -14,3 +16,29 @@ class Credit(Base):
 
     person = DB.relationship("User")
     production = DB.relationship("User")
+
+    def __init__(self, production_id: UUID, person_id: UUID, job: str):
+        self.identifier = uuid4()
+        self.production_id = production_id
+        self.person_id = person_id
+        self.job = job
+
+    def update(self, production_id: UUID = None, person_id: UUID = None, job: str = None, *_, **__) -> bool:
+        if production_id is not None:
+            self.production_id = production_id
+
+        if person_id is not None:
+            self.person_id = person_id
+
+        if job is not None:
+            self.job = job
+
+        return self.store()
+
+    def serialize(self):
+        return {
+            "identifier": str(self.identifier),
+            "production": self.production.serialize(),
+            "person": self.person.serialize(),
+            "job": self.job,
+        }

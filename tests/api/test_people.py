@@ -4,53 +4,26 @@ from tests.base_test import BaseTestCase
 
 
 class PeopleTest(BaseTestCase):
+    path = "people"
 
     def test_all(self):
-        self.get_people()
-        post_response = self.post_person()
-        person_id = post_response.json.get("identifier")
-        self.patch_person(person_id=person_id)
-        self.put_person(person_id=person_id)
-        self.get_person(person_id=person_id)
-        self.delete_person(person_id=person_id)
+        self.get_list()
+        
+        response = self.post(json=self.json())
+        identifier = response.json.get("identifier")
+        self.patch(identifier=identifier, json=self.patch_json())
+        self.get(identifier=identifier)
+        self.put(identifier=identifier, json=self.json())
+        self.delete(identifier=identifier)
 
-    def test_post(self):
-        post_response = self.post_person()
-        return post_response.json.get("identifier")
+    def json(self, phone: str = None, email: str = None, name: str = None):
+        return {
+            "phone": phone or "+45 12 12 12 12",
+            "email": email or f"{self.random_string()}@creditoro.nymann.dev",
+            "name": name or self.random_string()
+        }
 
-    def get_people(self):
-        response = self.get(path="/people/")
-        self.assertTrue(response.status_code == HTTPStatus.OK)
-        return response
-
-    def get_person(self, person_id):
-        response = self.get(path=f"/people/{person_id}")
-        self.assertTrue(response.status_code == HTTPStatus.OK)
-        return response
-
-    def post_person(self):
-        response = self.post(path="/people/",
-                             json={"phone": "+45 88 88 88 88",
-                                   "email": "test@creditoro.nymann.dev",
-                                   "name": "test"})
-        self.assertTrue(response.status_code == HTTPStatus.CREATED)
-        return response
-
-    def patch_person(self, person_id: str):
-        response = self.patch(path=f"/people/{person_id}", json={"phone": "+45 88 88 88 44"})
-        self.assertTrue(response.status_code == HTTPStatus.OK)
-        return response
-
-    def put_person(self, person_id: str):
-        response = self.put(path=f"/people/{person_id}",
-                            json={"phone": "+45 88 88 88 83",
-                                  "email": "test-put@creditoro.nymann.dev",
-                                  "name": "test-put"})
-        self.assertTrue(response.status_code == HTTPStatus.OK)
-        return response
-
-    def delete_person(self, person_id: str):
-        response = self.delete(f"/people/{person_id}")
-        self.assertTrue(response.status_code == HTTPStatus.NO_CONTENT)
-
-        return response
+    def patch_json(self, name: str = None):
+        return {
+            "name": name or self.random_string()
+        }

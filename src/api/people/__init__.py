@@ -4,7 +4,7 @@ from flask import request
 from flask_restplus import Namespace, Resource
 
 from src.api.auth_resource import AuthResource
-from src.api.people.decorators import id_to_person, create_person, check_password, update_person
+from src.api.people.decorators import id_to_person, create_person, update_person
 from src.api.people.fields import SERIALIZE_FIELDS, EXPECT_FIELDS, PATCH_FIELDS
 from src.models.people import Person
 
