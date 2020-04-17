@@ -4,7 +4,6 @@ from http import HTTPStatus
 from flask import request
 from sqlalchemy.exc import DataError
 from validate_email import validate_email
-from werkzeug.security import check_password_hash, generate_password_hash
 
 from src.models.people import Person
 
@@ -58,27 +57,5 @@ def update_person(func):
         if person.update(**body):
             return func(*args, **kwargs)
         return "", HTTPStatus.BAD_REQUEST
-
-    return wrapper
-
-
-def check_password(func):
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        # auth = request.authorization TODO: needed?
-        body = request.json
-        if not body:
-            return "No email and password provided", HTTPStatus.BAD_REQUEST
-        email = body.get("email", None)
-        if not email:
-            return "Email not  provided", HTTPStatus.BAD_REQUEST
-        person = Person.query.filter_by(email=email).one_or_none()
-        if not person:
-            return "Person not found", HTTPStatus.NOT_FOUND
-
-        password = body.get("password")
-        if not check_password_hash(person.password, password):
-            return "Incorrect password", HTTPStatus.BAD_REQUEST
-        return func(args, person=person, **kwargs)
 
     return wrapper

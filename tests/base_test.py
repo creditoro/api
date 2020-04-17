@@ -1,4 +1,7 @@
+import string
 import unittest
+from http import HTTPStatus
+import random
 
 import config
 from src import create_app
@@ -8,6 +11,7 @@ from src.models.users import User
 
 class BaseTestCase(unittest.TestCase):
     testing_email = "test@creditoro.nymann.dev"
+    path = ""
 
     def setUp(self) -> None:
         self.app = create_app(config.CONFIG_DICT["TEST"])
@@ -22,6 +26,7 @@ class BaseTestCase(unittest.TestCase):
                 self.test_user.store()
             response = self.client.post("/users/login", json={"email": self.testing_email, "password": "test"})
             self.token = response.json["token"]
+            self.headers = {"Authorization": self.token}
 
     def tearDown(self) -> None:
         # remove created user
@@ -32,17 +37,51 @@ class BaseTestCase(unittest.TestCase):
                 production.remove()
             self.test_user.remove()
 
-    def post(self, path: str, data: dict = None, json: dict = None):
-        return self.client.post(path, headers={"Authorization": self.token}, json=json, data=data)
+    def _post(self, path: str, data: dict = None, json: dict = None):
+        return self.client.post(path, headers=self.headers, json=json, data=data)
 
-    def patch(self, path: str, data: dict = None, json: dict = None):
-        return self.client.patch(path, headers={"Authorization": self.token}, json=json, data=data)
+    def _patch(self, path: str, data: dict = None, json: dict = None):
+        return self.client.patch(path, headers=self.headers, json=json, data=data)
 
-    def put(self, path: str, data: dict = None, json: dict = None):
-        return self.client.put(path, headers={"Authorization": self.token}, json=json, data=data)
+    def _put(self, path: str, data: dict = None, json: dict = None):
+        return self.client.put(path, headers=self.headers, json=json, data=data)
 
-    def get(self, path: str, data: dict = None, json: dict = None):
-        return self.client.get(path, headers={"Authorization": self.token}, json=json, data=data)
+    def _get(self, path: str, data: dict = None, json: dict = None):
+        return self.client.get(path, headers=self.headers, json=json, data=data)
 
-    def delete(self, path: str, data: dict = None, json: dict = None):
-        return self.client.delete(path, headers={"Authorization": self.token}, json=json, data=data)
+    def _delete(self, path: str, data: dict = None, json: dict = None):
+        return self.client.delete(path, headers=self.headers, json=json, data=data)
+
+    def get_list(self):
+        response = self._get(path=f"/{self.path}/")
+        self.assertTrue(response.status_code == HTTPStatus.OK)
+        return response
+
+    def get(self, identifier):
+        response = self._get(path=f"/{self.path}/{identifier}")
+        self.assertTrue(response.status_code == HTTPStatus.OK)
+        return response
+
+    def post(self, data: dict = None, json: dict = None):
+        response = self._post(path=f"/{self.path}/", data=data, json=json)
+        self.assertTrue(response.status_code == HTTPStatus.CREATED)
+        return response
+
+    def patch(self, identifier: str, data: dict = None, json: dict = None):
+        response = self._patch(path=f"/{self.path}/{identifier}", data=data, json=json)
+        self.assertTrue(response.status_code == HTTPStatus.OK)
+        return response
+
+    def put(self, identifier: str, data: dict = None, json: dict = None):
+        response = self._put(path=f"/{self.path}/{identifier}", data=data, json=json)
+        self.assertTrue(response.status_code == HTTPStatus.OK)
+        return response
+
+    def delete(self, identifier: str):
+        response = self._delete(f"/{self.path}/{identifier}")
+        self.assertTrue(response.status_code == HTTPStatus.NO_CONTENT)
+        return response
+
+    @staticmethod
+    def random_string(length: int = 7):
+        return "".join(random.choice(string.ascii_uppercase + string.digits) for _ in range(length))

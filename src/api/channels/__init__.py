@@ -35,7 +35,6 @@ class ListChannels(Resource):
     @CHANNELS.marshal_with(MODEL)
     @create_channel
     def post(self, channel: Channel):
-        # send_confirmation_email(channel=channel)
         return channel.serialize(), HTTPStatus.CREATED
 
 
