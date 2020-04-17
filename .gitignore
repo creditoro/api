@@ -11,3 +11,5 @@ venv/
 
 # Postgres docker-volume.
 postgres/
+
+.coverage
