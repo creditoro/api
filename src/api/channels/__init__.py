@@ -19,7 +19,7 @@ EXPECT_MODEL = CHANNELS.model(name="CHANNELS_signup_model", model=POST_FIELDS)
 class ListChannels(Resource):
     @CHANNELS.doc(security=None)
     @CHANNELS.marshal_list_with(MODEL)
-    @CHANNELS.param(name="q", description="query property, search for name, email and role.")
+    @CHANNELS.param(name="q", description="query property, search for name.")
     def get(self):
         query_prop = request.args.get(key="q", default=None, type=str)
         if query_prop is None:

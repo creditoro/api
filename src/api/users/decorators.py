@@ -1,6 +1,7 @@
 import functools
 from http import HTTPStatus
 
+import sentry_sdk
 from flask import request
 from sqlalchemy.exc import DataError
 from validate_email import validate_email
@@ -73,6 +74,7 @@ def check_password(func):
         # auth = request.authorization TODO: needed?
         body = request.json
         if not body:
+            sentry_sdk.capture_message(f"body was, {body}.")
             return "No email and password provided", HTTPStatus.BAD_REQUEST
         email = body.get("email", None)
         if not email:
