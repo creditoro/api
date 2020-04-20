@@ -12,10 +12,10 @@ class Channel(Base):
     name = DB.Column(DB.String, unique=True)
     icon_url = DB.Column(DB.String)
 
-    def __init__(self, name: str, image_url: str, *_, **__):
+    def __init__(self, name: str, icon_url: str, *_, **__):
         self.name = name
         self.identifier = uuid.uuid4()
-        self.icon_url = image_url
+        self.icon_url = icon_url
 
     def serialize(self):
         return {
