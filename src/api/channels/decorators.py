@@ -12,7 +12,8 @@ def create_channel(func):
     def wrapper(*args, **kwargs):
         body = request.json
         name = body.get("name")
-
+        if name is None:
+            return "", HTTPStatus.BAD_REQUEST
         channel = Channel.query.filter_by(name=name).one_or_none()
         if channel:
             # A user with that email already exists.
@@ -30,11 +31,11 @@ def id_to_channel(func):
     def wrapper(*args, **kwargs):
         channel_id = kwargs.get("channel_id")
         try:
-            user = Channel.query.get(channel_id)
-            if not user:
+            channel = Channel.query.get(channel_id)
+            if not channel:
                 return "User not found", HTTPStatus.NOT_FOUND  # 404
         except DataError:
             return "Provided user_id is invalid syntax for uuid", HTTPStatus.BAD_REQUEST
-        return func(*args, user)
+        return func(*args, channel)
 
     return wrapper
