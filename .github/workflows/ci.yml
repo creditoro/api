@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build with docker-compose and run unit tests.
-      - run: |
+        run: |
           docker network create web
           docker-compose up -d --build
           docker-compose exec -T creditoro_api flask db upgrade
