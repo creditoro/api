@@ -24,7 +24,7 @@ jobs:
       - name: Archive code coverage results
         uses: actions/upload-artifact@v1
         with:
-          name: Upload coverage report
+          name: coverage
           path: coverage.xml
   sonarcloud:
     runs-on: ubuntu-latest
@@ -33,7 +33,7 @@ jobs:
       - name: Download coverage.xml
         uses: actions/download-artifact@v1
         with:
-          name: coverage.xml
+          name: coverage
       - uses: actions/checkout@v2
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
