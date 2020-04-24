@@ -11,8 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: sonarsource/sonarcloud-github-action@master
       - name: Build with docker-compose and run unit tests.
-      - run: |
+        run: |
           docker network create web
           docker-compose up -d --build
           docker-compose exec -T creditoro_api flask db upgrade
@@ -21,10 +22,9 @@ jobs:
           docker-compose exec -T creditoro_api coverage xml
           docker-compose exec -T creditoro_api pylint --exit-zero src > pylint_report.txt
           docker cp "$(docker-compose ps -q creditoro_api)":/usr/src/app/coverage.xml coverage.xml
-          uses: sonarsource/sonarcloud-github-action@master
-            env:
-              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   tag-image:
     runs-on: ubuntu-latest
