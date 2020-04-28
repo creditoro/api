@@ -33,9 +33,9 @@ def id_to_channel(func):
         try:
             channel = Channel.query.get(channel_id)
             if not channel:
-                return "User not found", HTTPStatus.NOT_FOUND  # 404
+                return "Channel not found", HTTPStatus.NOT_FOUND  # 404
         except DataError:
-            return "Provided user_id is invalid syntax for uuid", HTTPStatus.BAD_REQUEST
+            return "Provided channel_id is invalid syntax for uuid", HTTPStatus.BAD_REQUEST
         return func(*args, channel)
 
     return wrapper
