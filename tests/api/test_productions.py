@@ -23,11 +23,12 @@ class ProductionsTest(BaseTestCase):
         self.delete(identifier=identifier)
         channel.delete(channel_id)
 
-    def json(self, channel_id: str, title: str = None, producer_id: str = None):
+    def json(self, channel_id: str, title: str = None, producer_id: str = None, description: str= None):
         return {
             "channel_id": channel_id,
             "producer_id": producer_id or self.test_user.identifier,
-            "title": title or self.random_string()
+            "title": title or self.random_string(),
+            "description": description or self.random_string()
         }
 
     def patch_json(self, title: str = None):
