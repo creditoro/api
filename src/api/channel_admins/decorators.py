@@ -17,3 +17,14 @@ def id_to_channel_admin(func):
         except DataError:
             return "Provided channel_admin_identifier is invalid syntax for uuid", HTTPStatus.BAD_REQUEST
     return wrapper
+
+def create_channel_admin(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        body = request.json
+        channel_admin = ChannelAdmin(**body)
+        if channel_admin.store():
+            return func(*args, **kwargs, user=user)
+        return "", HTTPStatus.INTERNAL_SERVER_ERROR
+
+    return wrapper
