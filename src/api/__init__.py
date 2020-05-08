@@ -9,7 +9,6 @@ from src.api.credits import CREDITS
 from src.api.people import PEOPLE
 from src.api.productions import PRODUCTIONS
 from src.api.users import USERS
-from src.api.channel_admins import CHANNEL_ADMINS
 
 AUTHORIZATIONS = {
     "Bearer Auth": {
@@ -53,6 +52,3 @@ API.add_namespace(PEOPLE)
 
 # api.creditoro.nymann.dev/credits/
 API.add_namespace(CREDITS)
-
-# api.creditoro.nymann.dev/channel_admins/
-API.add_namespace(CHANNEL_ADMINS)

@@ -1,3 +1,0 @@
-DROP INDEX channel_admin_user_identifier_idx;
-DROP INDEX channel_admin_channel_identifier_idx;
-DROP TABLE channel_admins;
