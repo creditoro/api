@@ -6,7 +6,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 
 import config
 from src.api import API
-from src.extensions import DB, MIGRATE, LIMITER, CORS, MAIL
+from src.extensions import DB, MIGRATE, LIMITER, CORS, MAIL, AUTH
 
 
 def create_app(app_config: config.Base):
@@ -23,6 +23,7 @@ def initialize_extensions(app: Flask):
     MIGRATE.init_app(app=app, db=DB)
     LIMITER.init_app(app=app)
     CORS.init_app(app=app)
+    AUTH.init_app(app=app)
     MAIL.init_app(app=app)
     sentry_sdk.init(
         integrations=[FlaskIntegration()],

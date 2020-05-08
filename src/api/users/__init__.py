@@ -1,8 +1,8 @@
-import datetime
+from datetime import timedelta, datetime
 from http import HTTPStatus
 
 import jwt
-from flask import current_app, request
+from flask import current_app, request, g
 from flask_restplus import Namespace, Resource
 from sqlalchemy import or_
 
@@ -79,11 +79,8 @@ class UserById(AuthResource):
 @USERS.route("/login")
 class UserLogin(Resource):
     @USERS.expect(LOGIN_MODEL)
+    @USERS.marshal_with(SERIALIZE_MODEL)
     @check_password
     def post(self, user: User):
-        token = jwt.encode(payload={"email": user.email,
-                                    "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=30)},
-                           key=current_app.config["SECRET_KEY"],
-                           algorithm="HS256")
-
-        return {"token": token.decode("UTF-8")}, HTTPStatus.OK
+        g.current_user = user
+        return user.serialize(), HTTPStatus.OK
