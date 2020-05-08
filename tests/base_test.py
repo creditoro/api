@@ -25,7 +25,7 @@ class BaseTestCase(unittest.TestCase):
                 self.test_user = User(name="test", email=self.testing_email, phone="42424242", password="test")
                 self.test_user.store()
             response = self.client.post("/users/login", json={"email": self.testing_email, "password": "test"})
-            self.token = response.json["token"]
+            self.token = response.headers["token"]
             self.headers = {"Authorization": self.token}
 
     def tearDown(self) -> None:
