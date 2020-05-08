@@ -2,9 +2,11 @@
 
 """
 from datetime import datetime, timedelta
+from http import HTTPStatus
 
 import jwt
-from flask import g
+from flask import g, request
+from jwt import DecodeError
 
 
 class Auth(object):
@@ -17,6 +19,7 @@ class Auth(object):
         @app.after_request
         def after_request(response):
             if "current_user" not in g:
+                print("Current user not found")
                 return response
             response.headers["token"] = refresh_token(g.current_user)
             return response
@@ -27,3 +30,16 @@ class Auth(object):
                                key=app.config["SECRET_KEY"],
                                algorithm="HS256")
             return token.decode("UTF-8")
+
+        @app.before_request
+        def before_request():
+            from src.models.users import User
+            token = request.headers.get("Authorization")
+            if not token:
+                return
+            try:
+                data = jwt.decode(jwt=token, key=app.config["SECRET_KEY"], algorithms=["HS256"])
+                g.current_user = User.query.get(data["id"])
+                g.token = token
+            except DecodeError:
+                return
