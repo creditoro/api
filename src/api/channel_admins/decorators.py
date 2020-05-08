@@ -24,7 +24,7 @@ def create_channel_admin(func):
         body = request.json
         channel_admin = ChannelAdmin(**body)
         if channel_admin.store():
-            return func(*args, **kwargs, user=user)
+            return func(*args, **kwargs, channelAdmin=channel_admin)
         return "", HTTPStatus.INTERNAL_SERVER_ERROR
 
     return wrapper

@@ -36,5 +36,6 @@ class ListChannelAdmins(AuthResource):
     @CHANNEL_ADMINS.expect(EXPECT_MODEL)
     @CHANNEL_ADMINS.marshal_with(SERIALIZE_MODEL)
     @create_channel_admin
-    def post(self, chhannelAdmin: ChannelAdmin):
+    def post(self, channelAdmin: ChannelAdmin):
         return ChannelAdmin.serialize(), HTTPStatus.CREATED
+
