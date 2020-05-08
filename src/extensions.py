@@ -7,10 +7,12 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_mail import Mail
 
+from src.auth import Auth
 from src.cors import Cors
 
 DB = SQLAlchemy()
 MIGRATE = Migrate()
 LIMITER = Limiter(key_func=get_remote_address, default_limits=["200/minute"])
 CORS = Cors()
+AUTH = Auth()
 MAIL = Mail()

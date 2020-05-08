@@ -13,10 +13,9 @@ def token_required(func):
         token = request.headers.get("Authorization")
         if not token:
             return "Token is missing", HTTPStatus.UNAUTHORIZED
-
         try:
             data = jwt.decode(jwt=token, key=current_app.config["SECRET_KEY"], algorithms=["HS256"])
-            current_user = User.query.filter_by(email=data["email"]).one_or_none()
+            current_user = User.query.get(data["id"])
         except Exception:
             return "Token is invalid", HTTPStatus.UNAUTHORIZED
         g.current_user = current_user
