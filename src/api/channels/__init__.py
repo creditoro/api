@@ -39,7 +39,7 @@ class ListChannels(Resource):
 
 
 @CHANNELS.route("/<string:channel_id>")
-class ChannelById(AuthResource):
+class ChannelById(Resource):
     @CHANNELS.marshal_with(MODEL)
     @id_to_channel
     def get(self, channel: Channel):
