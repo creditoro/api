@@ -18,13 +18,17 @@ PATCH_MODEL = CREDITS.model(name="credits_patch_model", model=PATCH_FIELDS)
 @CREDITS.route("/")
 class ListCredits(Resource):
     @CREDITS.marshal_list_with(SERIALIZE_MODEL)
-    @CREDITS.param(name="name", description="search for credits with this job.")
-    @CREDITS.param(name="person_id", description="search for credits by this person_id.")
-    @CREDITS.param(name="production_id", description="search for credited people for this production_id.")
+    @CREDITS.param(name="name",
+                   description="search for credits with this job.")
+    @CREDITS.param(name="person_id",
+                   description="search for credits by this person_id.")
+    @CREDITS.param(
+        name="production_id",
+        description="search for credited people for this production_id.")
     def get(self):
         job = request.args.get("job", None)
         person_id = request.args.get("person_id", None)
-        production_id = request.args.get("production_id")
+        production_id = request.args.get("production_id", None)
         if job is None and person_id is None and production_id is None:
             # user provided no parameters, query it all.
             results = Credit.query.all()
@@ -36,31 +40,28 @@ class ListCredits(Resource):
             results = Credit.query.filter_by(person_id=person_id).all()
         elif job is None:
             # user provided person_id and production_id
-            results = Credit.query.filter_by(person_id=person_id, production_id=production_id).all()
+            results = Credit.query.filter(
+                Credit.person_id == person_id,
+                Credit.production_id == production_id).all()
         elif production_id is None and person_id is None:
             # user only provided job
             results = Credit.query.filter(
-                Credit.title.ilike(f"%{job}%"),
-            ).all()
+                Credit.title.ilike(f"%{job}%"), ).all()
         elif production_id is None:
             # user provided job and person_id
-            results = Credit.query.filter(
-                Credit.title.ilike(f"%{job}%"),
-                Credit.person_id == person_id
-            ).all()
+            results = Credit.query.filter(Credit.title.ilike(f"%{job}%"),
+                                          Credit.person_id == person_id).all()
         elif person_id is None:
             # user provided job and production_id
             results = Credit.query.filter(
                 Credit.title.ilike(f"%{job}%"),
-                Credit.production_id == production_id
-            ).all()
+                Credit.production_id == production_id).all()
         else:
             # user provided job, person_id and production_id
             results = Credit.query.filter(
                 Credit.title.ilike(f"%{job}%"),
                 Credit.production_id == production_id,
-                Credit.person_id == person_id
-            ).all()
+                Credit.person_id == person_id).all()
         return Credit.serialize_list(results), HTTPStatus.OK
 
     @CREDITS.expect(EXPECT_MODEL)

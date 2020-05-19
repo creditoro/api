@@ -3,7 +3,6 @@ from http import HTTPStatus
 from flask import request
 from flask_restplus import Namespace, Resource
 
-from src.api.auth_resource import AuthResource
 from src.api.channels.decorators import id_to_channel, create_channel
 from src.api.channels.fields import SERIALIZE_FIELDS, POST_FIELDS
 from src.api.decorators import token_required
@@ -26,8 +25,7 @@ class ListChannels(Resource):
             results = Channel.query.all()
         else:
             results = Channel.query.filter(
-                Channel.name.ilike(f"%{query_prop}%")
-            ).all()
+                Channel.name.ilike(f"%{query_prop}%")).all()
         return Channel.serialize_list(results), HTTPStatus.OK
 
     @token_required
