@@ -16,3 +16,6 @@ postgres/
 coverage.xml
 pylint_report.txt
 htmlcov/
+
+# Sphinx compiled doc
+docs/build
