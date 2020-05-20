@@ -14,12 +14,13 @@ jobs:
       - name: Build with docker-compose and run unit tests.
         run: |
           docker network create web
+          cd src
           docker-compose up -d --build
           docker-compose exec -T creditoro_api flask db upgrade
           docker-compose exec -T creditoro_api pip install -r dev-requirements.txt
           docker-compose exec -T creditoro_api coverage run -m unittest discover
           docker-compose exec -T creditoro_api coverage xml
-          docker-compose exec -T creditoro_api pylint --exit-zero src > pylint_report.txt
+          docker-compose exec -T creditoro_api pylint --exit-zero src > ../pylint_report.txt
           docker cp "$(docker-compose ps -q creditoro_api)":/usr/src/app/coverage.xml coverage.xml
       - name: Archive code coverage results
         uses: actions/upload-artifact@v1
