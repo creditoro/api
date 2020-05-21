@@ -27,3 +27,5 @@ PyJwt
 
 # Validate email
 validate_email
+
+pylint_flask_sqlalchemy
