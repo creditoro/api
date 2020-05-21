@@ -20,6 +20,9 @@ project = 'Creditoro API'
 copyright = '2020, Kristian Nymann Jakobsen, Simon Jørgensen, Jakob Rasmusen, Kevin Petersen, Kenneth Christiansen, Mathias Rasmussen'
 author = 'Kristian Nymann Jakobsen, Simon Jørgensen, Jakob Rasmusen, Kevin Petersen, Kenneth Christiansen, Mathias Rasmussen'
 
+# Let readthedocs know who's boss.
+master_doc = 'index'
+
 # The full version, including alpha/beta/rc tags
 release = '1.0.0'
 
