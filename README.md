@@ -18,7 +18,8 @@ You can find the newest build Docker image at
 
 An example configuration can be seen in 
 [example/docker-compose.yml](example/docker-compose.yml).
-Remember to change configuration settings in [db.env](production/db.env).
+Remember to change configuration settings in [db.env](example/db.env).
+
 #### First time setup
 - Configure your `docker-compose.yml` file and your `.env` files as 
 stated above.
