@@ -1,2 +1,31 @@
 sphinxcontrib-napoleon
 
+itsdangerous
+# Database related
+psycopg2-binary
+sqlalchemy
+flask_sqlalchemy
+flask_migrate
+
+# Email
+flask_mail
+
+#Rate limiting
+flask_limiter
+
+# WSGI
+gunicorn
+
+# Flask related
+flask
+werkzeug==0.16.1 # used for ProxyFix
+flask_restplus # used for RESTful API framework.
+
+# Error reporting
+sentry_sdk[flask]
+
+# Web tokens
+PyJwt
+
+# Validate email
+validate_email
