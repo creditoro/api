@@ -1,11 +1,23 @@
+"""
+This module is for decorators used by /credits
+"""
+
 from http import HTTPStatus
 
 from flask import request
 from flask_restplus import Namespace, Resource
 
 from creditoro_api.api.auth_resource import AuthResource
-from creditoro_api.api.credits.decorators import id_to_credit, create_credit, update_credit
-from creditoro_api.api.credits.fields import SERIALIZE_FIELDS, EXPECT_FIELDS, PATCH_FIELDS
+from creditoro_api.api.credits.decorators import (
+    id_to_credit,
+    create_credit,
+    update_credit,
+)
+from creditoro_api.api.credits.fields import (
+    SERIALIZE_FIELDS,
+    EXPECT_FIELDS,
+    PATCH_FIELDS,
+)
 from creditoro_api.models.credits import Credit
 
 CREDITS = Namespace(name="credits", description="Endpoints for credits.")
@@ -17,6 +29,8 @@ PATCH_MODEL = CREDITS.model(name="credits_patch_model", model=PATCH_FIELDS)
 
 @CREDITS.route("/")
 class ListCredits(Resource):
+    """ListCredits.
+    """
     @CREDITS.marshal_list_with(SERIALIZE_MODEL)
     @CREDITS.param(name="name",
                    description="search for credits with this job.")
@@ -24,8 +38,11 @@ class ListCredits(Resource):
                    description="search for credits by this person_id.")
     @CREDITS.param(
         name="production_id",
-        description="search for credited people for this production_id.")
+        description="search for credited people for this production_id.",
+    )
     def get(self):
+        """get.
+        """
         job = request.args.get("job", None)
         person_id = request.args.get("person_id", None)
         production_id = request.args.get("production_id", None)
@@ -61,37 +78,65 @@ class ListCredits(Resource):
             results = Credit.query.filter(
                 Credit.title.ilike(f"%{job}%"),
                 Credit.production_id == production_id,
-                Credit.person_id == person_id).all()
+                Credit.person_id == person_id,
+            ).all()
         return Credit.serialize_list(results), HTTPStatus.OK
 
     @CREDITS.expect(EXPECT_MODEL)
     @CREDITS.marshal_with(SERIALIZE_MODEL)
     @create_credit
     def post(self, credit: Credit):
+        """post.
+
+        Args:
+            credit (Credit): credit
+        """
         return credit.serialize(), HTTPStatus.CREATED
 
 
 @CREDITS.route("/<string:credit_id>")
 class CreditById(AuthResource):
+    """CreditById.
+    """
     @CREDITS.marshal_with(SERIALIZE_MODEL)
     @id_to_credit
     def get(self, credit: Credit):
+        """get.
+
+        Args:
+            credit (Credit): credit
+        """
         return credit.serialize(), HTTPStatus.OK
 
     @CREDITS.expect(EXPECT_MODEL)
     @CREDITS.marshal_with(SERIALIZE_MODEL)
     @update_credit
     def put(self, credit):
+        """put.
+
+        Args:
+            credit:
+        """
         return credit.serialize(), HTTPStatus.OK
 
     @CREDITS.marshal_with(SERIALIZE_MODEL)
     @CREDITS.expect(PATCH_MODEL)
     @update_credit
     def patch(self, credit):
+        """patch.
+
+        Args:
+            credit:
+        """
         return credit.serialize(), HTTPStatus.OK
 
     @CREDITS.marshal_with(SERIALIZE_MODEL)
     @id_to_credit
     def delete(self, credit):
+        """delete.
+
+        Args:
+            credit:
+        """
         credit.remove()
         return "", HTTPStatus.NO_CONTENT

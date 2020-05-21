@@ -1,3 +1,7 @@
+"""
+This module is for decorators used by /users
+"""
+
 import functools
 from http import HTTPStatus
 
@@ -5,14 +9,25 @@ import sentry_sdk
 from flask import request
 from sqlalchemy.exc import DataError
 from validate_email import validate_email
-from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.security import check_password_hash
 
 from creditoro_api.models.users import User
 
 
 def id_to_user(func):
+    """id_to_user.
+
+    Args:
+        func:
+    """
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
+        """wrapper.
+
+        Args:
+            args:
+            kwargs:
+        """
         user_id = kwargs.get("user_id")
         try:
             user = User.query.get(user_id)
@@ -27,8 +42,19 @@ def id_to_user(func):
 
 
 def create_user(func):
+    """create_user.
+
+    Args:
+        func:
+    """
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
+        """wrapper.
+
+        Args:
+            args:
+            kwargs:
+        """
         body = request.json
         email = body.get("email")
         if not validate_email(email):
@@ -52,9 +78,20 @@ def create_user(func):
 
 
 def update_user(func):
+    """update_user.
+
+    Args:
+        func:
+    """
     @id_to_user
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
+        """wrapper.
+
+        Args:
+            args:
+            kwargs:
+        """
         user = kwargs.get("user")
         if user is None:
             # A user with that email already exists.
@@ -69,8 +106,19 @@ def update_user(func):
 
 
 def check_password(func):
+    """check_password.
+
+    Args:
+        func:
+    """
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
+        """wrapper.
+
+        Args:
+            args:
+            kwargs:
+        """
         # auth = request.authorization TODO: needed?
         body = request.json
         if not body:

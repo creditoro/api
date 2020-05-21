@@ -1,3 +1,7 @@
+"""
+This module is used for sending email.
+"""
+
 import threading
 from smtplib import SMTPException
 
@@ -32,24 +36,34 @@ def send_email(message_list=None, message=None):
             for message_element in messages:
                 try:
                     conn.send(message_element)
-                except SMTPException as e:
-                    sentry_sdk.capture_message("Mail exception: '%s'." % str(e))
-                except TypeError as e:
-                    sentry_sdk.capture_message("TypeError exception: '%s" % str(e))
-                except TimeoutError as e:
+                except SMTPException as exc:
+                    sentry_sdk.capture_message("Mail exception: '%s'." %
+                                               str(exc))
+                except TypeError as exc:
+                    sentry_sdk.capture_message("TypeError exception: '%s" %
+                                               str(exc))
+                except TimeoutError as exc:
                     sentry_sdk.capture_message(
-                        "A TimeOut have occurred while trying to send a mail\n%s" % str(e))
+                        "A TimeOut have occurred while trying to send a mail\n%s"
+                        % str(exc))
 
     try:
-        sender_thread = threading.Thread(name="mail_sender", target=send_messages,
-                                         args=(message_list,))
+        sender_thread = threading.Thread(name="mail_sender",
+                                         target=send_messages,
+                                         args=(message_list, ))
         sender_thread.start()
-    except TypeError as e:
-        sentry_sdk.capture_message("This is event occurred when trying to send mails in threads")
-        sentry_sdk.capture_exception(e)
+    except TypeError as exc:
+        sentry_sdk.capture_message(
+            "This is event occurred when trying to send mails in threads")
+        sentry_sdk.capture_exception(exc)
 
 
 def send_confirmation_email(user):
+    """send_confirmation_email.
+
+    Args:
+        user:
+    """
     msg = Message(subject="Email confirmation", recipients=[user.email])
     msg.html = f"http://creditoro.nymann.dev/confirm?token={user.generate_confirmation_token()}"
     send_email(message=msg)

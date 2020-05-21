@@ -1,3 +1,7 @@
+"""
+This module is the ORM for Users.
+"""
+
 from enum import Enum
 from uuid import uuid4
 
@@ -79,7 +83,6 @@ class User(Base):
             if validate_email(email):
                 self.email = email
             else:
-                # TODO replace with raise custom invalid email exception
                 return False
 
         if phone is not None:
@@ -97,5 +100,5 @@ class User(Base):
             "identifier": str(self.identifier),
             "name": self.name,
             "email": self.email,
-            "phone": self.phone
+            "phone": self.phone,
         }

@@ -1,3 +1,7 @@
+"""
+This module is for decorators used by /people
+"""
+
 import functools
 from http import HTTPStatus
 
@@ -9,23 +13,48 @@ from creditoro_api.models.people import Person
 
 
 def id_to_person(func):
+    """id_to_person.
+
+    Args:
+        func:
+    """
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
+        """wrapper.
+
+        Args:
+            args:
+            kwargs:
+        """
         person_id = kwargs.get("person_id")
         try:
             person = Person.query.get(person_id)
             if not person:
                 return "Person not found", HTTPStatus.NOT_FOUND  # 404
         except DataError:
-            return "Provided person_id is invalid syntax for uuid", HTTPStatus.BAD_REQUEST
+            return (
+                "Provided person_id is invalid syntax for uuid",
+                HTTPStatus.BAD_REQUEST,
+            )
         return func(*args, person=person)
 
     return wrapper
 
 
 def create_person(func):
+    """create_person.
+
+    Args:
+        func:
+    """
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
+        """wrapper.
+
+        Args:
+            args:
+            kwargs:
+        """
         body = request.json
         email = body.get("email")
         if not validate_email(email):
@@ -45,9 +74,20 @@ def create_person(func):
 
 
 def update_person(func):
+    """update_person.
+
+    Args:
+        func:
+    """
     @id_to_person
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
+        """wrapper.
+
+        Args:
+            args:
+            kwargs:
+        """
         person = kwargs.get("person")
         if person is None:
             # A person with that email already exists.

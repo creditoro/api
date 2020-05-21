@@ -11,11 +11,7 @@ from creditoro_api.api.productions import PRODUCTIONS
 from creditoro_api.api.users import USERS
 
 AUTHORIZATIONS = {
-    "Bearer Auth": {
-        "type": "apiKey",
-        "in": "header",
-        "name": "Authorization"
-    }
+    "Bearer Auth": {"type": "apiKey", "in": "header", "name": "Authorization"}
 }
 
 API = Api(
@@ -27,7 +23,7 @@ API = Api(
     default_mediatype="application/json",
     contact_url="https://github.com/creditoro",
     security="Bearer Auth",
-    authorizations=AUTHORIZATIONS
+    authorizations=AUTHORIZATIONS,
 )
 
 

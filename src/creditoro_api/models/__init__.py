@@ -9,7 +9,7 @@ from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
 from creditoro_api.extensions import DB
 
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 def commit() -> bool:
@@ -23,16 +23,14 @@ def commit() -> bool:
         return True
     except (SQLAlchemyError, IntegrityError) as error:
         print(error)
-        logger.debug("dbapierror: %s", error)
+        LOGGER.debug("dbapierror: %s", error)
         DB.session.rollback()
         return False
-    except Exception as exception:
-        print(exception)
-        logger.error("Unhandled exception: %s", exception)
 
 
 class Base(DB.Model):
     """Meant to be used as a base class for all our "database-table" classes instead of db.Model."""
+
     __abstract__ = True
 
     def store(self) -> bool:

@@ -1,3 +1,7 @@
+"""
+This module is for mapping a User to a channel, and thereby becoming a channel
+admin.
+"""
 from sqlalchemy.dialects.postgresql import UUID
 
 from creditoro_api.models import Base

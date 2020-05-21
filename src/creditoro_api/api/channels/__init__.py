@@ -1,3 +1,7 @@
+"""
+This module is for /channels endpoints.
+"""
+
 from http import HTTPStatus
 
 from flask import request
@@ -16,10 +20,14 @@ EXPECT_MODEL = CHANNELS.model(name="CHANNELS_signup_model", model=POST_FIELDS)
 
 @CHANNELS.route("/")
 class ListChannels(Resource):
+    """ListChannels.
+    """
     @CHANNELS.doc(security=None)
     @CHANNELS.marshal_list_with(MODEL)
     @CHANNELS.param(name="q", description="query property, search for name.")
     def get(self):
+        """get.
+        """
         query_prop = request.args.get(key="q", default=None, type=str)
         if query_prop is None:
             results = Channel.query.all()
@@ -33,11 +41,18 @@ class ListChannels(Resource):
     @CHANNELS.marshal_with(MODEL)
     @create_channel
     def post(self, channel: Channel):
+        """post.
+
+        Args:
+            channel (Channel): channel
+        """
         return channel.serialize(), HTTPStatus.CREATED
 
 
 @CHANNELS.route("/<string:channel_id>")
 class ChannelById(Resource):
+    """ChannelById.
+    """
     @CHANNELS.marshal_with(MODEL)
     @id_to_channel
     def get(self, channel: Channel):
@@ -47,6 +62,11 @@ class ChannelById(Resource):
     @CHANNELS.expect(EXPECT_MODEL)
     @id_to_channel
     def patch(self, channel):
+        """patch.
+
+        Args:
+            channel:
+        """
         body = CHANNELS.payload
         name = body.get("name")
         channel.name = name
@@ -55,6 +75,11 @@ class ChannelById(Resource):
 
     @id_to_channel
     def delete(self, channel):
+        """delete.
+
+        Args:
+            channel:
+        """
         if channel.remove():
             # 2XX - success
             # 4XX - Client error

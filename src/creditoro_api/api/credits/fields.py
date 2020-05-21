@@ -1,3 +1,7 @@
+"""
+This module is for defining fields (json body) for /credits/.
+"""
+
 from flask_restplus import fields
 
 SERIALIZE_FIELDS = {
