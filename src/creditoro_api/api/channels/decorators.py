@@ -1,3 +1,7 @@
+"""
+This module is for decorators used by /channels
+"""
+
 import functools
 from http import HTTPStatus
 
@@ -8,8 +12,19 @@ from creditoro_api.models.channels import Channel
 
 
 def create_channel(func):
+    """create_channel.
+
+    Args:
+        func:
+    """
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
+        """wrapper.
+
+        Args:
+            args:
+            kwargs:
+        """
         body = request.json
         name = body.get("name")
         if name is None:
@@ -27,8 +42,19 @@ def create_channel(func):
 
 
 def id_to_channel(func):
+    """id_to_channel.
+
+    Args:
+        func:
+    """
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
+        """wrapper.
+
+        Args:
+            args:
+            kwargs:
+        """
         channel_id = kwargs.get("channel_id")
         try:
             channel = Channel.query.get(channel_id)

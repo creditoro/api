@@ -56,6 +56,11 @@ class ChannelById(Resource):
     @CHANNELS.marshal_with(MODEL)
     @id_to_channel
     def get(self, channel: Channel):
+        """get.
+
+        Args:
+            channel (Channel): channel
+        """
         return channel.serialize(), HTTPStatus.OK
 
     @CHANNELS.marshal_with(MODEL)

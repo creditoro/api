@@ -1,3 +1,6 @@
+"""
+This module is for fields (json body) used by /channels/.
+"""
 from flask_restplus import fields
 
 SERIALIZE_FIELDS = {
