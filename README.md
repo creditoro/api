@@ -6,13 +6,18 @@
 REST API for [Creditoro](https://api.creditoro.nymann.dev), a semester 
 project at SDU.
 
+### Documentation
+Documentation can be found at
+[readthedocs](https://creditoro-api.readthedocs.io/en/latest/).
+
 
 ## Running in production
-The suggested way to run the API in production is via [Docker]() and 
-[Docker Compose]().
+The suggested way to run the API in production is via [Docker](https://docker.com). 
+You can find the newest build Docker image at
+[DockerHub](https://hub.docker.com/u/creditoro).
 
 An example configuration can be seen in 
-[production/docker-compose.yml](production/docker-compose.yml).
+[example/docker-compose.yml](example/docker-compose.yml).
 Remember to change configuration settings in [db.env](production/db.env).
 #### First time setup
 - Configure your `docker-compose.yml` file and your `.env` files as 
