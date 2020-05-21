@@ -2,6 +2,7 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=creditoro_api&metric=alert_status)](https://sonarcloud.io/dashboard?id=creditoro_api)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=creditoro_api&metric=coverage)](https://sonarcloud.io/dashboard?id=creditoro_api)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=creditoro_api&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=creditoro_api)
+[![Documentation Status](https://readthedocs.org/projects/creditoro-api/badge/?version=latest)](https://creditoro-api.readthedocs.io/en/latest/?badge=latest)
 
 REST API for [Creditoro](https://api.creditoro.nymann.dev), a semester 
 project at SDU.
