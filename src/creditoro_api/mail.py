@@ -26,11 +26,10 @@ def send_email(message_list=None, message=None):
 
     @copy_current_request_context
     def send_messages(messages):
-        """
-        This is the function, the thread should run to send mails, without the user should wait for
-        this to finish, before rendering the response html.
-        :param messages: List of messages to be sent.
-        :return: None
+        """send_messages.
+
+        Args:
+            messages:
         """
         with MAIL.connect() as conn:
             for message_element in messages:
@@ -64,6 +63,7 @@ def send_confirmation_email(user):
     Args:
         user:
     """
+    token = user.generate_confirmation_token()
     msg = Message(subject="Email confirmation", recipients=[user.email])
-    msg.html = f"http://creditoro.nymann.dev/confirm?token={user.generate_confirmation_token()}"
+    msg.html = f"http://creditoro.nymann.dev/confirm?token={token}"
     send_email(message=msg)
