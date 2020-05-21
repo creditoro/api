@@ -49,5 +49,5 @@ jobs:
       - name: Tag image
         run: |
           echo -n ${{ secrets.DOCKER_HUB_PASS }} | docker login -u creditoro --password-stdin
-          docker build -t creditoro/api:production -f docker/Dockerfile .
+          docker build -t creditoro/api:production -f src/docker/Dockerfile .
           docker push creditoro/api:production
