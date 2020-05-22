@@ -20,10 +20,10 @@ class Credit(Base):
     production_id = DB.Column(UUID(as_uuid=True),
                               DB.ForeignKey("productions.identifier"))
     person_id = DB.Column(UUID(as_uuid=True),
-                          DB.ForeignKey("users.identifier"))
+                          DB.ForeignKey("people.identifier"))
 
-    person = DB.relationship("User")
-    production = DB.relationship("User")
+    person = DB.relationship("Person")
+    production = DB.relationship("Production")
 
     def __init__(self, production_id: UUID, person_id: UUID, job: str):
         """__init__.
