@@ -2,6 +2,7 @@ from uuid import UUID
 
 from tests.api.test_channels import ChannelsTest
 from tests.api.test_productions import ProductionsTest
+from tests.api.test_people import PeopleTest
 from tests.base_test import BaseTestCase
 
 
