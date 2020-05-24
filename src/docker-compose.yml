@@ -36,7 +36,7 @@ services:
     labels:
       - "traefik.enable=false"
     volumes:
-      - ./postgres/data:/var/lib/postgresql/data/
+      - ../../postgres/data:/var/lib/postgresql/data/
     networks:
       - creditoro_internal
 
