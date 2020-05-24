@@ -16,26 +16,26 @@ class BaseTestCase(unittest.TestCase):
     def setUp(self) -> None:
         self.app = create_app(config.CONFIG_DICT["TEST"])
         self.client = self.app.test_client()
-        self.login()
+        with self.app.app_context():
+            self.login()
 
     def login(self):
-        with self.app.test_request_context():
-            self.test_user = User.query.filter_by(
-                email=self.testing_email).one_or_none()
-            if not self.test_user:
-                self.test_user = User(name="test",
-                                      email=self.testing_email,
-                                      phone="42424242",
-                                      password="test",
-                                      role=Role.system_admin)
-                self.test_user.store()
-            response = self.client.post("/users/login",
-                                        json={
-                                            "email": self.testing_email,
-                                            "password": "test"
-                                        })
-            self.token = response.headers["token"]
-            self.headers = {"Authorization": self.token}
+        self.test_user = User.query.filter_by(
+            email=self.testing_email).one_or_none()
+        if not self.test_user:
+            self.test_user = User(name="test",
+                                  email=self.testing_email,
+                                  phone="42424242",
+                                  password="test",
+                                  role=Role.system_admin)
+            self.test_user.store()
+        response = self.client.post("/users/login",
+                                    json={
+                                        "email": self.testing_email,
+                                        "password": "test"
+                                    })
+        self.token = response.headers["token"]
+        self.headers = {"Authorization": self.token}
 
     def tearDown(self) -> None:
         # remove created user

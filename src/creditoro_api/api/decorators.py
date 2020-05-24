@@ -26,17 +26,16 @@ def token_required(func):
             args:
             kwargs:
         """
-        try:
-            if g.token is None:
-                return "Token is missing or invalid", HTTPStatus.UNAUTHORIZED
-        except RuntimeError:
-            print("We can't access this, too bad, THIS SHOULD NOT HAPPEN IN PRODUCTION.")
+        # try:
+        if g.token is None:
+            return "Token is missing or invalid", HTTPStatus.UNAUTHORIZED
+        # except RuntimeError:
+        #     print("We can't access this, too bad, THIS SHOULD NOT HAPPEN IN PRODUCTION.")
         return func(*args, **kwargs)
 
     return wrapper
 
 
-@token_required
 def is_sys_admin(func):
     """is_sys_admin.
 
@@ -44,6 +43,7 @@ def is_sys_admin(func):
         func:
     """
 
+    @token_required
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         user = g.current_user
@@ -54,7 +54,6 @@ def is_sys_admin(func):
     return wrapper
 
 
-@token_required
 def is_royalty_user(func):
     """is_royalty_user.
 
@@ -62,6 +61,7 @@ def is_royalty_user(func):
         func:
     """
 
+    @token_required
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         """wrapper.
@@ -78,7 +78,6 @@ def is_royalty_user(func):
     return wrapper
 
 
-@token_required
 def is_channel_admin(func):
     """is_channel_admin.
 
@@ -86,6 +85,7 @@ def is_channel_admin(func):
         func:
     """
 
+    @token_required
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         """wrapper.

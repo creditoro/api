@@ -5,14 +5,13 @@ class PeopleTest(BaseTestCase):
     path = "people"
 
     def test_all(self):
-        with self.app.app_context():
-            self.get_list()
-            response = self.post(json=self.json())
-            identifier = response.json.get("identifier")
-            self.patch(identifier=identifier, json=self.patch_json())
-            self.get(identifier=identifier)
-            self.put(identifier=identifier, json=self.json())
-            self.delete(identifier=identifier)
+        self.get_list()
+        response = self.post(json=self.json())
+        identifier = response.json.get("identifier")
+        self.patch(identifier=identifier, json=self.patch_json())
+        self.get(identifier=identifier)
+        self.put(identifier=identifier, json=self.json())
+        self.delete(identifier=identifier)
 
     def json(self, phone: str = None, email: str = None, name: str = None):
         return {

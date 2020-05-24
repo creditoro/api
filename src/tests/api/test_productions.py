@@ -15,21 +15,20 @@ class ProductionsTest(BaseTestCase):
     def test_all(self):
         """test_all.
         """
-        with self.app.app_context():
-            self.get_list()
-            channel = ChannelsTest(methodName="post")
-            channel.setUp()
+        self.get_list()
+        channel = ChannelsTest(methodName="post")
+        channel.setUp()
 
-            channel_response = channel.post(json=channel.json())
-            channel_id = channel_response.json.get("identifier")
+        channel_response = channel.post(json=channel.json())
+        channel_id = channel_response.json.get("identifier")
 
-            response = self.post(json=self.json(channel_id=channel_id))
-            identifier = response.json.get("identifier")
-            self.patch(identifier=identifier, json=self.patch_json())
-            self.get(identifier=identifier)
-            self.put(identifier=identifier, json=self.json(channel_id=channel_id))
-            self.delete(identifier=identifier)
-            channel.delete(channel_id)
+        response = self.post(json=self.json(channel_id=channel_id))
+        identifier = response.json.get("identifier")
+        self.patch(identifier=identifier, json=self.patch_json())
+        self.get(identifier=identifier)
+        self.put(identifier=identifier, json=self.json(channel_id=channel_id))
+        self.delete(identifier=identifier)
+        channel.delete(channel_id)
 
     def json(self,
              channel_id: str,
