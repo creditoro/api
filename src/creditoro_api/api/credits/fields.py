@@ -6,6 +6,12 @@ from flask_restplus import fields
 
 SERIALIZE_FIELDS = {
     "identifier": fields.String(),
+    "production": fields.Raw(),
+    "person": fields.Raw(),
+    "job": fields.String(),
+}
+
+POST_FIELDS = {
     "production": fields.String(required=True),
     "person": fields.String(required=True),
     "job": fields.String(required=True),
