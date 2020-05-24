@@ -6,8 +6,8 @@ from uuid import uuid4
 from sqlalchemy.dialects.postgresql import UUID
 from validate_email import validate_email
 
-from creditoro_api.models import Base
 from creditoro_api.extensions import DB
+from creditoro_api.models import Base
 
 
 class Person(Base):
@@ -33,9 +33,17 @@ class Person(Base):
         self.email = email
         self.name = name
 
-    def serialize(self):
+    def serialize_auth(self, authenticated: bool):
         """serialize.
         """
+        if authenticated:
+            return self.serialize()
+        return {
+            "identifier": str(self.identifier),
+            "name": self.name
+        }
+
+    def serialize(self):
         return {
             "identifier": str(self.identifier),
             "phone": self.phone,
@@ -74,3 +82,13 @@ class Person(Base):
             self.name = name
 
         return self.store()
+
+    @staticmethod
+    def serialize_auth_list(list_to_serialize: [], authenticated: bool):
+        """
+        Serializes a list of self.
+        example usage: return jsonify({"results": YourClass.serialize_list(data)})
+        :return (list) of self as dict.
+        """
+        return [element.serialize_auth(authenticated=authenticated) for element in
+                list_to_serialize]

@@ -4,6 +4,7 @@ This module is for manging user token.
 from datetime import datetime, timedelta
 
 import jwt
+import sentry_sdk
 from flask import g, request
 from jwt import DecodeError
 
@@ -64,13 +65,11 @@ class Auth:
                 data = jwt.decode(jwt=token,
                                   key=app.config["SECRET_KEY"],
                                   algorithms=["HS256"])
-                tmp_user = User.query.get(data["id"])
-                print(tmp_user)
                 g.token = token
-                g.current_user = tmp_user
+                g.current_user = User.query.get(data["id"])
 
             except DecodeError as e:
-                print(e)
+                sentry_sdk.capture_exception(e)
                 return
 
     def trick(self, token):

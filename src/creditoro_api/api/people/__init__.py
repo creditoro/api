@@ -3,10 +3,11 @@ This module is for routes in the /people endpoint.
 """
 from http import HTTPStatus
 
-from flask import request
+from flask import request, g
 from flask_restplus import Namespace, Resource
 
 from creditoro_api.api.auth_resource import AuthResource
+from creditoro_api.api.decorators import is_sys_admin, token_required
 from creditoro_api.api.people.decorators import (
     id_to_person,
     create_person,
@@ -30,11 +31,10 @@ PATCH_MODEL = PEOPLE.model(name="people_patch_model", model=PATCH_FIELDS)
 class ListPeople(Resource):
     """ListPeople.
     """
-    @PEOPLE.marshal_list_with(SERIALIZE_MODEL)
+
     @PEOPLE.param(name="name", description="search for people with this name.")
     @PEOPLE.param(name="email",
-                   description="search for people by email.")
-
+                  description="search for people by email.")
     def get(self):
         """get.
         """
@@ -56,10 +56,13 @@ class ListPeople(Resource):
                 Person.name.ilike(f"%{name}%"),
                 Person.email == email,
             ).all()
-        return Person.serialize_list(results), HTTPStatus.OK
+        authenticated = "current_user" in g
+        return Person.serialize_auth_list(list_to_serialize=results,
+                                          authenticated=authenticated), HTTPStatus.OK
 
     @PEOPLE.expect(EXPECT_MODEL)
     @PEOPLE.marshal_with(SERIALIZE_MODEL)
+    @token_required
     @create_person
     def post(self, person: Person):
         """post.
@@ -74,7 +77,7 @@ class ListPeople(Resource):
 class PersonById(AuthResource):
     """PersonById.
     """
-    @PEOPLE.marshal_with(SERIALIZE_MODEL)
+
     @id_to_person
     def get(self, person: Person):
         """get.
@@ -82,7 +85,8 @@ class PersonById(AuthResource):
         Args:
             person (Person): person
         """
-        return person.serialize(), HTTPStatus.OK
+        authenticated = "current_user" in g
+        return person.serialize_auth(authenticated), HTTPStatus.OK
 
     @PEOPLE.expect(EXPECT_MODEL)
     @PEOPLE.marshal_with(SERIALIZE_MODEL)
@@ -107,6 +111,7 @@ class PersonById(AuthResource):
         return person.serialize(), HTTPStatus.OK
 
     @PEOPLE.marshal_with(SERIALIZE_MODEL)
+    @is_sys_admin
     @id_to_person
     def delete(self, person):
         """delete.
