@@ -17,6 +17,7 @@ from creditoro_api.api.credits.fields import (
     SERIALIZE_FIELDS,
     EXPECT_FIELDS,
     PATCH_FIELDS,
+    POST_FIELDS,
 )
 from creditoro_api.models.credits import Credit
 
@@ -25,6 +26,7 @@ CREDITS = Namespace(name="credits", description="Endpoints for credits.")
 SERIALIZE_MODEL = CREDITS.model(name="credit_model", model=SERIALIZE_FIELDS)
 EXPECT_MODEL = CREDITS.model(name="credits_except_model", model=EXPECT_FIELDS)
 PATCH_MODEL = CREDITS.model(name="credits_patch_model", model=PATCH_FIELDS)
+POST_MODEL = CREDITS.model(name="credits_post_model", model=POST_FIELDS)
 
 
 @CREDITS.route("/")
@@ -82,7 +84,7 @@ class ListCredits(Resource):
             ).all()
         return Credit.serialize_list(results), HTTPStatus.OK
 
-    @CREDITS.expect(EXPECT_MODEL)
+    @CREDITS.expect(POST_MODEL)
     @CREDITS.marshal_with(SERIALIZE_MODEL)
     @create_credit
     def post(self, credit: Credit):

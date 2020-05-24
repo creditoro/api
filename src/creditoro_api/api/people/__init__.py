@@ -32,16 +32,30 @@ class ListPeople(Resource):
     """
     @PEOPLE.marshal_list_with(SERIALIZE_MODEL)
     @PEOPLE.param(name="name", description="search for people with this name.")
+    @PEOPLE.param(name="email",
+                   description="search for people by email.")
+
     def get(self):
         """get.
         """
         name = request.args.get("name", None)
-        if name is None:
+        email = request.args.get("email", None)
+        if name is None and email is None:
+            # user provid no parameters, query it all.
             results = Person.query.all()
-        else:
-            q = f"%{name}%"
-            query = Person.query.filter(Person.name.ilike(q), )
+        elif email is None:
+            # user provided name
+            query = Person.query.filter(Person.name.ilike(f"%{name}%"), )
             results = query.all()
+        elif name is None:
+            # user provided email
+            results = Person.query.filter(Person.email == email).all()
+        else:
+            # user provided both name and email
+            results = Person.query.filter(
+                Person.name.ilike(f"%{name}%"),
+                Person.email == email,
+            ).all()
         return Person.serialize_list(results), HTTPStatus.OK
 
     @PEOPLE.expect(EXPECT_MODEL)
