@@ -3,7 +3,7 @@ CREATE TABLE credits
     identifier    UUID         NOT NULL,
     job           VARCHAR(256) NOT NULL,
     production_id UUID REFERENCES productions (identifier),
-    person_id     UUID REFERENCES users (identifier),
+    person_id     UUID REFERENCES people (identifier),
     PRIMARY KEY (identifier)
 );
 CREATE INDEX credit_job_idx ON credits USING btree (job);

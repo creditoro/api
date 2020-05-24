@@ -2,6 +2,7 @@ from uuid import UUID
 
 from tests.api.test_channels import ChannelsTest
 from tests.api.test_productions import ProductionsTest
+from tests.api.test_people import PeopleTest
 from tests.base_test import BaseTestCase
 
 
@@ -10,6 +11,12 @@ class CreditsTest(BaseTestCase):
 
     def test_all(self):
         self.get_list()
+
+        person = PeopleTest(methodName="post")
+        person.setUp()
+
+        person_response = person.post(json=person.json())
+        person_id = person_response.json.get("identifier")
 
         channel = ChannelsTest(methodName="post")
         channel.setUp()
@@ -23,7 +30,7 @@ class CreditsTest(BaseTestCase):
         prod_response = production.post(json=production.json(channel_id=channel_id))
         production_id = prod_response.json.get("identifier")
 
-        post_response = self.post(json=self.json(production_id=production_id))
+        post_response = self.post(json=self.json(production_id=production_id, person_id=person_id))
         identifier = post_response.json.get("identifier")
 
         self.patch(identifier=identifier, json=self.patch_json())
@@ -35,7 +42,7 @@ class CreditsTest(BaseTestCase):
 
     def json(self, production_id: UUID, person_id: UUID = None, job: str = None):
         return {
-            "person_id": person_id or self.test_user.identifier,
+            "person_id": person_id,
             "production_id": production_id,
             "job": job or self.random_string()
         }
