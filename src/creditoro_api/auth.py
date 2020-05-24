@@ -11,6 +11,7 @@ from jwt import DecodeError
 class Auth:
     """Auth.
     """
+
     def __init__(self, app=None, **kwargs):
         """__init__.
 
@@ -19,17 +20,18 @@ class Auth:
             kwargs:
         """
         self._options = kwargs
+        self.token = None
         if app is not None:
             self.init_app(app, **kwargs)
 
-    @staticmethod
-    def init_app(app, **_):
+    def init_app(self, app, **_):
         """init_app.
 
         Args:
             app:
             _:
         """
+
         @app.after_request
         def after_request(response):
             if "current_user" not in g:
@@ -62,7 +64,14 @@ class Auth:
                 data = jwt.decode(jwt=token,
                                   key=app.config["SECRET_KEY"],
                                   algorithms=["HS256"])
-                g.current_user = User.query.get(data["id"])
+                tmp_user = User.query.get(data["id"])
+                print(tmp_user)
                 g.token = token
-            except DecodeError:
+                g.current_user = tmp_user
+
+            except DecodeError as e:
+                print(e)
                 return
+
+    def trick(self, token):
+        self.token = token

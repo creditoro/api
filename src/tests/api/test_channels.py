@@ -13,13 +13,14 @@ class ChannelsTest(BaseTestCase):
     def test_all(self):
         """test_all.
         """
-        self.get_list()
+        with self.app.test_request_context():
+            self.get_list()
 
-        response = self.post(json=self.json())
-        identifier = response.json.get("identifier")
-        self.patch(identifier=identifier, json=self.patch_json())
-        self.get(identifier=identifier)
-        self.delete(identifier=identifier)
+            response = self.post(json=self.json())
+            identifier = response.json.get("identifier")
+            self.patch(identifier=identifier, json=self.patch_json())
+            self.get(identifier=identifier)
+            self.delete(identifier=identifier)
 
     def json(self, name: str = None, url: str = None):
         """json.

@@ -37,7 +37,7 @@ class User(Base):
                            server_default=func.now())
     password = DB.Column(DB.String)
 
-    def __init__(self, name: str, email: str, phone: str, password: str, *_,
+    def __init__(self, name: str, email: str, phone: str, password: str, role: Role, *_,
                  **__):
         """__init__.
 
@@ -46,21 +46,25 @@ class User(Base):
             email (str): email
             phone (str): phone
             password (str): password
+            role (Role): role
             _:
             __:
         """
+        if type(role) == int:
+            role = Role(value=role)
         self.name = name
         self.email = email
         self.phone = phone
         self.password = generate_password_hash(password, method="sha256")
         self.identifier = uuid4()
-        self.role = Role.royalty_user
+        self.role = role
 
     def update(self,
                name: str = None,
                email: str = None,
                phone: str = None,
                password: str = None,
+               role: Role = None,
                *_,
                **__) -> bool:
         """update.
@@ -70,6 +74,7 @@ class User(Base):
             email (str): email
             phone (str): phone
             password (str): password
+            role (Role): role
             _:
             __:
 
@@ -91,6 +96,12 @@ class User(Base):
         if password is not None:
             self.password = generate_password_hash(password=password,
                                                    method="sha256")
+
+        if role is not None:
+            if type(role) == int:
+                role = Role(value=role)
+            self.role = role
+
         return self.store()
 
     def serialize(self):

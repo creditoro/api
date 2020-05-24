@@ -17,6 +17,7 @@ def token_required(func):
     Args:
         func:
     """
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         """wrapper.
@@ -25,8 +26,11 @@ def token_required(func):
             args:
             kwargs:
         """
-        if "token" not in g:
-            return "Token is missing or invalid", HTTPStatus.UNAUTHORIZED
+        try:
+            if g.token is None:
+                return "Token is missing or invalid", HTTPStatus.UNAUTHORIZED
+        except RuntimeError:
+            print("We can't access this, too bad, THIS SHOULD NOT HAPPEN IN PRODUCTION.")
         return func(*args, **kwargs)
 
     return wrapper
@@ -39,6 +43,7 @@ def is_sys_admin(func):
     Args:
         func:
     """
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         user = g.current_user
@@ -56,6 +61,7 @@ def is_royalty_user(func):
     Args:
         func:
     """
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         """wrapper.
@@ -79,6 +85,7 @@ def is_channel_admin(func):
     Args:
         func:
     """
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         """wrapper.
@@ -88,11 +95,11 @@ def is_channel_admin(func):
             kwargs:
         """
         user = g.current_user
-        if user.role < Role.channel_admin:
+        if user.role.value < Role.channel_admin.value:
             return "User doesn't have permission", HTTPStatus.UNAUTHORIZED
-        if user.role == Role.system_admin:
+        if user.role.value == Role.system_admin.value:
             return func(*args, **kwargs)
-        if user.role == Role.channel_admin:
+        if user.role.value == Role.channel_admin.value:
             channel = kwargs.get("channel")
             channel_admin = ChannelAdmin.query.filter(
                 ChannelAdmin.channel_uuid == channel.identifier,

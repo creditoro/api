@@ -1,5 +1,7 @@
 from flask_restplus import fields
 
+from creditoro_api.models.users import Role
+
 SERIALIZE_FIELDS = {
     "identifier": fields.String(required=False),
     "name": fields.String(required=True),
@@ -13,6 +15,7 @@ SIGNUP_FIELDS = {
     "phone": fields.String(required=False),
     "password": fields.String(required=True),
     "repeated_password": fields.String(required=True),
+    "role": fields.Integer(default=Role.royalty_user.value)
 }
 
 PATCH_FIELDS = {

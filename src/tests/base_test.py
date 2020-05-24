@@ -1,12 +1,12 @@
+import random
 import string
 import unittest
 from http import HTTPStatus
-import random
 
 import config
 from creditoro_api import create_app
 from creditoro_api.models.productions import Production
-from creditoro_api.models.users import User
+from creditoro_api.models.users import User, Role
 
 
 class BaseTestCase(unittest.TestCase):
@@ -19,14 +19,15 @@ class BaseTestCase(unittest.TestCase):
         self.login()
 
     def login(self):
-        with self.app.app_context():
+        with self.app.test_request_context():
             self.test_user = User.query.filter_by(
                 email=self.testing_email).one_or_none()
             if not self.test_user:
                 self.test_user = User(name="test",
                                       email=self.testing_email,
                                       phone="42424242",
-                                      password="test")
+                                      password="test",
+                                      role=Role.system_admin)
                 self.test_user.store()
             response = self.client.post("/users/login",
                                         json={

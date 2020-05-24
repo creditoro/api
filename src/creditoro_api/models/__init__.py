@@ -39,6 +39,7 @@ class Base(DB.Model):
         :return (bool) True if operation was successful otherwise False.
         """
         DB.session.add(self)
+        print(self)
         return commit()
 
     def remove(self) -> bool:
