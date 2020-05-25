@@ -4,10 +4,13 @@ This module is for decorators used by /productions.
 import functools
 from http import HTTPStatus
 
-from flask import request
+from flask import request, g
 from sqlalchemy.exc import DataError
 
+from creditoro_api.api.decorators import token_required
+from creditoro_api.models.channel_admins import ChannelAdmin
 from creditoro_api.models.productions import Production
+from creditoro_api.models.users import Role
 
 
 def create_production(func):
@@ -16,6 +19,7 @@ def create_production(func):
     Args:
         func:
     """
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         body = request.json
@@ -42,6 +46,7 @@ def id_to_production(func):
     Args:
         func:
     """
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         """wrapper.
@@ -71,6 +76,7 @@ def update_production(func):
     Args:
         func:
     """
+
     @id_to_production
     @functools.wraps(func)
     def wrapper(*args, **kwargs):

@@ -6,7 +6,10 @@ from http import HTTPStatus
 
 from flask import request
 from sqlalchemy.exc import DataError
+
+from creditoro_api.models.channel_admins import ChannelAdmin
 from creditoro_api.models.credits import Credit
+from creditoro_api.models.users import Role
 
 
 def id_to_credit(func):
@@ -15,6 +18,7 @@ def id_to_credit(func):
     Args:
         func:
     """
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         credit_id = kwargs.get("credit_id")
@@ -38,6 +42,7 @@ def create_credit(func):
     Args:
         func:
     """
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         """wrapper.
@@ -73,6 +78,7 @@ def update_credit(func):
     Args:
         func:
     """
+
     @id_to_credit
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -90,5 +96,53 @@ def update_credit(func):
         if credit.update(**body):
             return func(*args, **kwargs)
         return "", HTTPStatus.BAD_REQUEST
+
+    return wrapper
+
+
+def can_alter_production(func):
+    """This function checks if the current user is the owner of the production or otherwise has
+    permission to edit it..
+
+    Args:
+        func:
+    """
+
+    @token_required
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        """wrapper.
+
+        Args:
+            args:
+            kwargs:
+        """
+        user = g.current_user
+        if user.role.value == Role.system_admin.value:
+            # User is a system administrator, grant access.
+            return func(*args, **kwargs)
+
+        production = kwargs.get("production")
+        if production.producer_id == user.identifier:
+            # GRANT ACCESS: The requester is the producer of the production
+            return func(*args, **kwargs)
+
+        if user.role.value == Role.channel_admin.value:
+            channel_admin = ChannelAdmin.query.filter_by(user_uuid=user.identifier,
+                                                         channel_uuid=production.channel_id).first()
+            if channel_admin is not None:
+                # GRANT ACCESS: The requester is a channel admin
+                return
+            return "User doesn't have permission", HTTPStatus.UNAUTHORIZED
+
+        if user.role.value == Role.channel_admin.value:
+            channel = kwargs.get("channel")
+            channel_admin = ChannelAdmin.query.filter(
+                ChannelAdmin.channel_uuid == channel.identifier,
+                ChannelAdmin.user_uuid == user.identifier,
+            ).one_or_none()
+            if channel_admin is not None:
+                return func(*args, **kwargs)
+        return "User doesn't have permission", HTTPStatus.UNAUTHORIZED
 
     return wrapper

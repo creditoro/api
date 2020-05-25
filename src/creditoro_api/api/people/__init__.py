@@ -31,10 +31,8 @@ PATCH_MODEL = PEOPLE.model(name="people_patch_model", model=PATCH_FIELDS)
 class ListPeople(Resource):
     """ListPeople.
     """
-
     @PEOPLE.param(name="name", description="search for people with this name.")
-    @PEOPLE.param(name="email",
-                  description="search for people by email.")
+    @PEOPLE.param(name="email", description="search for people by email.")
     def get(self):
         """get.
         """
@@ -57,8 +55,9 @@ class ListPeople(Resource):
                 Person.email == email,
             ).all()
         authenticated = "current_user" in g
-        return Person.serialize_auth_list(list_to_serialize=results,
-                                          authenticated=authenticated), HTTPStatus.OK
+        return Person.serialize_auth_list(
+            list_to_serialize=results,
+            authenticated=authenticated), HTTPStatus.OK
 
     @PEOPLE.expect(EXPECT_MODEL)
     @PEOPLE.marshal_with(SERIALIZE_MODEL)
@@ -77,7 +76,6 @@ class ListPeople(Resource):
 class PersonById(AuthResource):
     """PersonById.
     """
-
     @id_to_person
     def get(self, person: Person):
         """get.

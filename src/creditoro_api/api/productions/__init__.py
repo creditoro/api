@@ -6,7 +6,9 @@ from http import HTTPStatus
 
 from flask import request
 from flask_restplus import Namespace, Resource
+
 from creditoro_api.api.auth_resource import AuthResource
+from creditoro_api.api.decorators import token_required, is_sys_admin
 from creditoro_api.api.productions.decorators import (
     id_to_production,
     create_production,
@@ -17,7 +19,6 @@ from creditoro_api.api.productions.fields import (
     POST_FIELDS,
     PATCH_FIELDS,
 )
-from creditoro_api.api.decorators import token_required
 from creditoro_api.models.productions import Production
 
 PRODUCTIONS = Namespace(name="productions",
@@ -35,6 +36,7 @@ PATCH_MODEL = PRODUCTIONS.model(name="productions_patch_model",
 class ListProductions(Resource):
     """ListProductions.
     """
+
     @PRODUCTIONS.doc(security=None)
     @PRODUCTIONS.marshal_list_with(SERIALIZE_MODEL)
     @PRODUCTIONS.param(
@@ -68,6 +70,7 @@ class ListProductions(Resource):
 class ProductionById(AuthResource):
     """ProductionById.
     """
+
     @PRODUCTIONS.marshal_with(SERIALIZE_MODEL)
     @id_to_production
     def get(self, production: Production):
@@ -101,6 +104,7 @@ class ProductionById(AuthResource):
         return production.serialize(), HTTPStatus.OK
 
     @id_to_production
+    @is_sys_admin
     def delete(self, production):
         """delete.
 
