@@ -15,7 +15,11 @@ class UsersTest(BaseTestCase):
         self.put(identifier=identifier, json=self.json())
         self.delete(identifier=identifier)
 
-    def json(self, phone: str = None, email: str = None, name: str = None, password: str = None):
+    def json(self,
+             phone: str = None,
+             email: str = None,
+             name: str = None,
+             password: str = None):
         password = password or self.random_string()
         return {
             "phone": phone or "+45 12 12 12 12",
@@ -27,6 +31,4 @@ class UsersTest(BaseTestCase):
         }
 
     def patch_json(self, name: str = None):
-        return {
-            "name": name or self.random_string()
-        }
+        return {"name": name or self.random_string()}

@@ -37,8 +37,8 @@ class User(Base):
                            server_default=func.now())
     password = DB.Column(DB.String)
 
-    def __init__(self, name: str, email: str, phone: str, password: str, role: Role, *_,
-                 **__):
+    def __init__(self, name: str, email: str, phone: str, password: str,
+                 role: Role, *_, **__):
         """__init__.
 
         Args:

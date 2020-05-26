@@ -36,7 +36,6 @@ PATCH_MODEL = PRODUCTIONS.model(name="productions_patch_model",
 class ListProductions(Resource):
     """ListProductions.
     """
-
     @PRODUCTIONS.doc(security=None)
     @PRODUCTIONS.marshal_list_with(SERIALIZE_MODEL)
     @PRODUCTIONS.param(
@@ -70,7 +69,6 @@ class ListProductions(Resource):
 class ProductionById(AuthResource):
     """ProductionById.
     """
-
     @PRODUCTIONS.marshal_with(SERIALIZE_MODEL)
     @id_to_production
     def get(self, production: Production):
@@ -83,6 +81,7 @@ class ProductionById(AuthResource):
 
     @PRODUCTIONS.marshal_with(SERIALIZE_MODEL)
     @PRODUCTIONS.expect(PATCH_MODEL)
+    @is_sys_admin
     @update_production
     def patch(self, production):
         """patch.
@@ -94,6 +93,7 @@ class ProductionById(AuthResource):
 
     @PRODUCTIONS.marshal_with(SERIALIZE_MODEL)
     @PRODUCTIONS.expect(EXPECT_MODEL)
+    @is_sys_admin
     @update_production
     def put(self, production):
         """put.
