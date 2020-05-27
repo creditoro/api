@@ -5,6 +5,8 @@ from http import HTTPStatus
 
 import config
 from creditoro_api import create_app
+from creditoro_api.models.channel_admins import ChannelAdmin
+from creditoro_api.models.credits import Credit
 from creditoro_api.models.productions import Production
 from creditoro_api.models.users import User, Role
 
@@ -45,7 +47,10 @@ class BaseTestCase(unittest.TestCase):
             productions = Production.query.filter_by(
                 producer_id=self.test_user.identifier).all()
             for production in productions:
+                # Check if the production has any credits remaining.
+                Credit.query.filter(Credit.production_id == production.identifier).delete()
                 production.remove()
+            ChannelAdmin.query.filter_by(user_id=self.test_user.identifier).delete()
             self.test_user.remove()
 
     def _post(self, path: str, data: dict = None, json: dict = None):

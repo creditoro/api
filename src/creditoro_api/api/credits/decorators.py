@@ -128,8 +128,8 @@ def can_alter_credit(func):
 
         if user.role.value == Role.channel_admin.value:
             admin_for_specific_channel = ChannelAdmin.query.filter_by(
-                user_uuid=user.identifier,
-                channel_uuid=production.channel_id).first()
+                user_id=user.identifier,
+                channel_id=production.channel_id).first()
             if admin_for_specific_channel is not None:
                 # GRANT ACCESS: The requester is a channel admin
                 return func(*args, **kwargs)

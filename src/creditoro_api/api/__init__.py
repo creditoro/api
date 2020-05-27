@@ -4,6 +4,7 @@ This module is used for adding namespaces to the api.
 from flask import make_response
 from flask_restplus import Api
 
+from creditoro_api.api.channel_admins import CHANNEL_ADMINS
 from creditoro_api.api.channels import CHANNELS
 from creditoro_api.api.credits import CREDITS
 from creditoro_api.api.people import PEOPLE
@@ -48,3 +49,6 @@ API.add_namespace(PEOPLE)
 
 # api.creditoro.nymann.dev/credits/
 API.add_namespace(CREDITS)
+
+# api.creditoro.nymann.dev/channel_admins/
+API.add_namespace(CHANNEL_ADMINS)

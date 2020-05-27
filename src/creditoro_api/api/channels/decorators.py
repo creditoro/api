@@ -17,6 +17,7 @@ def create_channel(func):
     Args:
         func:
     """
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         """wrapper.
@@ -47,6 +48,7 @@ def id_to_channel(func):
     Args:
         func:
     """
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         """wrapper.
@@ -55,13 +57,17 @@ def id_to_channel(func):
             args:
             kwargs:
         """
-        channel_id = kwargs.get("channel_id")
+        if "channel_id" in kwargs:
+            channel_id = kwargs.get("channel_id")
+            kwargs.pop("channel_id")
+        else:
+            channel_id = request.json.get("channel_id")
         try:
             channel = Channel.query.get(channel_id)
             if not channel:
                 return "User not found", HTTPStatus.NOT_FOUND  # 404
         except DataError:
             return "Provided user_id is invalid syntax for uuid", HTTPStatus.BAD_REQUEST
-        return func(*args, channel)
+        return func(*args, channel=channel, **kwargs)
 
     return wrapper

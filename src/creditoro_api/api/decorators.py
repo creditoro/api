@@ -96,8 +96,8 @@ def is_channel_admin(func):
         if user.role.value == Role.channel_admin.value:
             channel = kwargs.get("channel")
             channel_admin = ChannelAdmin.query.filter(
-                ChannelAdmin.channel_uuid == channel.identifier,
-                ChannelAdmin.user_uuid == user.identifier,
+                ChannelAdmin.channel_id == channel.identifier,
+                ChannelAdmin.user_id == user.identifier,
             ).one_or_none()
             if channel_admin is not None:
                 return func(*args, **kwargs)

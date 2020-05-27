@@ -20,6 +20,7 @@ def id_to_user(func):
     Args:
         func:
     """
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         """wrapper.
@@ -28,7 +29,11 @@ def id_to_user(func):
             args:
             kwargs:
         """
-        user_id = kwargs.get("user_id")
+        if "user_id" in kwargs:
+            user_id = kwargs.get("user_id")
+            kwargs.pop("user_id")
+        else:
+            user_id = request.json.get("user_id")
         try:
             user = User.query.get(user_id)
             if not user:
@@ -37,7 +42,7 @@ def id_to_user(func):
             # api.creditoro.nymann.dev/users/k3l;21k3;lk3as
             return ("Provided user_id is invalid syntax for uuid",
                     HTTPStatus.BAD_REQUEST)
-        return func(*args, user=user)
+        return func(*args, user=user, **kwargs)
 
     return wrapper
 
@@ -48,6 +53,7 @@ def create_user(func):
     Args:
         func:
     """
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         """wrapper.
@@ -100,6 +106,7 @@ def update_user(func):
     Args:
         func:
     """
+
     @id_to_user
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -128,6 +135,7 @@ def check_password(func):
     Args:
         func:
     """
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         """wrapper.
