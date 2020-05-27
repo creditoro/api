@@ -6,12 +6,12 @@ import functools
 from http import HTTPStatus
 
 import sentry_sdk
-from flask import request
+from flask import request, g
 from sqlalchemy.exc import DataError
 from validate_email import validate_email
 from werkzeug.security import check_password_hash
 
-from creditoro_api.models.users import User
+from creditoro_api.models.users import User, Role
 
 
 def id_to_user(func):
@@ -35,7 +35,8 @@ def id_to_user(func):
                 return "User not found", HTTPStatus.NOT_FOUND  # 404
         except DataError:
             # api.creditoro.nymann.dev/users/k3l;21k3;lk3as
-            return "Provided user_id is invalid syntax for uuid", HTTPStatus.BAD_REQUEST
+            return ("Provided user_id is invalid syntax for uuid",
+                    HTTPStatus.BAD_REQUEST)
         return func(*args, user=user)
 
     return wrapper
@@ -70,11 +71,27 @@ def create_user(func):
             return "", HTTPStatus.CONFLICT
 
         user = User(**body)
-        if user.store():
+        if can_alter_user and user.store():
             return func(*args, **kwargs, user=user)
         return "", HTTPStatus.INTERNAL_SERVER_ERROR
 
     return wrapper
+
+
+def can_alter_user(role: Role) -> bool:
+    """Checks if the current user's role is "higher" or the same as the role
+    of the user that's to be created.
+
+    Args:
+        role (Role): The role of the user to be created
+
+    Returns:
+        bool: True if the current user has permission to create the new user.
+        Otherwise false.
+    """
+
+    current_user = g.current_user
+    return current_user.role.value >= role.value
 
 
 def update_user(func):
@@ -98,7 +115,7 @@ def update_user(func):
             return "", HTTPStatus.NOT_FOUND
 
         body = request.json
-        if user.update(**body):
+        if can_alter_user(user.role) and user.update(**body):
             return func(*args, **kwargs)
         return "", HTTPStatus.BAD_REQUEST
 

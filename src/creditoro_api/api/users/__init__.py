@@ -2,11 +2,9 @@
 This module is for endpoints with base path at /users/
 """
 
-from datetime import timedelta, datetime
 from http import HTTPStatus
 
-import jwt
-from flask import current_app, request, g
+from flask import request, g
 from flask_restplus import Namespace, Resource
 from sqlalchemy import or_
 
