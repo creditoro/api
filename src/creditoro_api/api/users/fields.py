@@ -7,6 +7,7 @@ SERIALIZE_FIELDS = {
     "name": fields.String(required=True),
     "phone": fields.String(required=True),
     "email": fields.String(required=True),
+    "role": fields.Integer(required=True)
 }
 
 SIGNUP_FIELDS = {
@@ -23,6 +24,7 @@ PATCH_FIELDS = {
     "email": fields.String(required=False),
     "phone": fields.String(required=False),
     "password": fields.String(required=False),
+    "role": fields.Integer(required=False)
 }
 
 LOGIN_FIELDS = {

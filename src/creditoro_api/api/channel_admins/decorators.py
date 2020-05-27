@@ -57,9 +57,9 @@ def permission(func):
     @functools.wraps(func)
     def wrapper(*args, channel: Channel, **kwargs):
         current_user = g.current_user
-        if current_user.role == Role.system_admin:
+        if current_user.role.value == Role.system_admin.value:
             return func(*args, channel=channel, **kwargs)
-        if current_user.role != Role.channel_admin:
+        if current_user.role.value != Role.channel_admin.value:
             return "", HTTPStatus.UNAUTHORIZED
         # Check if the user is channel admin for the specific channel:
         ca = ChannelAdmin.query.filter_by(

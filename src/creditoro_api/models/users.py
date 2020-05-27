@@ -112,4 +112,5 @@ class User(Base):
             "name": self.name,
             "email": self.email,
             "phone": self.phone,
+            "role": self.role.value
         }
