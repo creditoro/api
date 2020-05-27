@@ -17,7 +17,6 @@ def token_required(func):
     Args:
         func:
     """
-
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         """wrapper.
@@ -29,8 +28,6 @@ def token_required(func):
         # try:
         if g.token is None:
             return "Token is missing or invalid", HTTPStatus.UNAUTHORIZED
-        # except RuntimeError:
-        #     print("We can't access this, too bad, THIS SHOULD NOT HAPPEN IN PRODUCTION.")
         return func(*args, **kwargs)
 
     return wrapper
@@ -42,7 +39,6 @@ def is_sys_admin(func):
     Args:
         func:
     """
-
     @token_required
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -60,7 +56,6 @@ def is_royalty_user(func):
     Args:
         func:
     """
-
     @token_required
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -84,7 +79,6 @@ def is_channel_admin(func):
     Args:
         func:
     """
-
     @token_required
     @functools.wraps(func)
     def wrapper(*args, **kwargs):

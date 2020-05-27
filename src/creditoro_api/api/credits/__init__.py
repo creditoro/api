@@ -6,7 +6,7 @@ from http import HTTPStatus
 
 from flask import request
 from flask_restplus import Namespace, Resource
-
+from creditoro_api.api.credits.decorators import can_alter_credit
 from creditoro_api.api.auth_resource import AuthResource
 from creditoro_api.api.credits.decorators import (
     id_to_credit,
@@ -112,6 +112,7 @@ class CreditById(AuthResource):
 
     @CREDITS.expect(EXPECT_MODEL)
     @CREDITS.marshal_with(SERIALIZE_MODEL)
+    @can_alter_credit
     @update_credit
     def put(self, credit):
         """put.
@@ -123,6 +124,7 @@ class CreditById(AuthResource):
 
     @CREDITS.marshal_with(SERIALIZE_MODEL)
     @CREDITS.expect(PATCH_MODEL)
+    @can_alter_credit
     @update_credit
     def patch(self, credit):
         """patch.
@@ -133,7 +135,7 @@ class CreditById(AuthResource):
         return credit.serialize(), HTTPStatus.OK
 
     @CREDITS.marshal_with(SERIALIZE_MODEL)
-    @id_to_credit
+    @can_alter_credit
     def delete(self, credit):
         """delete.
 

@@ -22,7 +22,6 @@ def commit() -> bool:
         DB.session.commit()
         return True
     except (SQLAlchemyError, IntegrityError) as error:
-        print(error)
         LOGGER.debug("dbapierror: %s", error)
         DB.session.rollback()
         return False
@@ -39,7 +38,6 @@ class Base(DB.Model):
         :return (bool) True if operation was successful otherwise False.
         """
         DB.session.add(self)
-        print(self)
         return commit()
 
     def remove(self) -> bool:

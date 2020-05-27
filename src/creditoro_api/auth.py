@@ -12,7 +12,6 @@ from jwt import DecodeError
 class Auth:
     """Auth.
     """
-
     def __init__(self, app=None, **kwargs):
         """__init__.
 
@@ -32,11 +31,9 @@ class Auth:
             app:
             _:
         """
-
         @app.after_request
         def after_request(response):
             if "current_user" not in g:
-                print("Current user not found")
                 return response
             response.headers["token"] = refresh_token(g.current_user)
             return response

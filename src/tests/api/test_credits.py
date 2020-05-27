@@ -27,7 +27,8 @@ class CreditsTest(BaseTestCase):
         production = ProductionsTest(methodName="post")
         production.setUp()
 
-        prod_response = production.post(json=production.json(channel_id=channel_id))
+        prod_response = production.post(json=production.json(
+            channel_id=channel_id))
         production_id = prod_response.json.get("identifier")
 
         post_response = self.post(
@@ -35,13 +36,17 @@ class CreditsTest(BaseTestCase):
         identifier = post_response.json.get("identifier")
 
         self.patch(identifier=identifier, json=self.patch_json())
-        self.put(identifier=identifier, json=self.json(production_id=production_id))
+        self.put(identifier=identifier,
+                 json=self.json(production_id=production_id))
         self.get(identifier=identifier)
         self.delete(identifier=identifier)
         production.delete(identifier=production_id)
         channel.delete(identifier=channel_id)
 
-    def json(self, production_id: UUID, person_id: UUID = None, job: str = None):
+    def json(self,
+             production_id: UUID,
+             person_id: UUID = None,
+             job: str = None):
         return {
             "person_id": person_id,
             "production_id": production_id,
@@ -49,6 +54,4 @@ class CreditsTest(BaseTestCase):
         }
 
     def patch_json(self, job: str = None):
-        return {
-            "job": job or self.random_string()
-        }
+        return {"job": job or self.random_string()}
