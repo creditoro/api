@@ -35,8 +35,8 @@ production, or the following:
 
 #### First time setup
 Configure [dev-setup.sh](dev-setup.sh) to your liking, and setup a 
-PostgreSQL database using the credentials specified that you have just 
-configured. When the database is created, do the following:
+PostgreSQL database using the credentials specified which you have just 
+configured. When the database is created, run the following commands:
 - `source dev-setup.sh`
 - `flask db upgrade`
 - `flask run`
